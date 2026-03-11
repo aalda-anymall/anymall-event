@@ -8,15 +8,71 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Submission {
-  id                String    @id @default(cuid())
-  email             String    @unique
-  lineId            String
-  verified          Boolean   @default(false)
-  verifiedAt        DateTime?
-  verificationToken String?   @unique
-  tokenExpiresAt    DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+enum SlotState {
+  APPLICATIONS_CLOSED
+  ACCEPTING_APPLICATIONS
 }
+
+enum SlotApplicationStatus {
+  APPLIED
+  WAITLISTED
+  ACCEPTED
+  REJECTED
+  CANCELED
+}
+
+model Submission {
+  id                String           @id @default(cuid())
+  email             String           @unique
+  lineId            String
+  verified          Boolean          @default(false)
+  verifiedAt        DateTime?
+  verificationToken String?          @unique
+  tokenExpiresAt    DateTime?
+  slotApplications  SubmissionSlot[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  slots     Slot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Slot {
+  id               String           @id @default(cuid())
+  venueId          String
+  venue            Venue            @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  startsAt         DateTime
+  endsAt           DateTime
+  state            SlotState        @default(ACCEPTING_APPLICATIONS)
+  applications     SubmissionSlot[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([venueId, startsAt])
+  @@index([state])
+}
+
+model SubmissionSlot {
+  id           String                @id @default(cuid())
+  submissionId String
+  slotId       String
+  submission   Submission            @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  slot         Slot                  @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  appliedAt    DateTime              @default(now())
+  status       SlotApplicationStatus @default(APPLIED)
+  notes        String?
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@unique([submissionId, slotId])
+  @@index([slotId, status])
+  @@index([submissionId])
+}
+
 
