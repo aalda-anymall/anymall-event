@@ -1,15 +1,16 @@
 import { randomUUID } from "node:crypto";
-import { Prisma } from "@prisma/client";
+import { Prisma, SlotApplicationStatus, SlotState } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { sendVerificationEmail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
-import { isValidEmail, isValidKatakanaName, isValidSex, parseBirthday } from "@/lib/validation";
+import { isValidEmail, isValidGender, isValidKatakanaName, parseBirthday } from "@/lib/validation";
 
 type CreateApplicationBody = {
   name?: string;
   email?: string;
   birthday?: string;
-  sex?: string;
+  gender?: string;
+  selectedSlotIds?: unknown;
 };
 
 function normalizeText(value: unknown): string {
@@ -28,7 +29,8 @@ export async function POST(request: NextRequest) {
   const name = normalizeText(body.name);
   const email = normalizeText(body.email).toLowerCase();
   const birthdayInput = normalizeText(body.birthday);
-  const sex = normalizeText(body.sex);
+  const gender = normalizeText(body.gender);
+  const selectedSlotIdsInput = body.selectedSlotIds;
   const birthday = parseBirthday(birthdayInput);
 
   if (!isValidKatakanaName(name)) {
@@ -43,8 +45,41 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid birthday." }, { status: 400 });
   }
 
-  if (!isValidSex(sex)) {
-    return NextResponse.json({ error: "Invalid sex value." }, { status: 400 });
+  if (!isValidGender(gender)) {
+    return NextResponse.json({ error: "Invalid gender value." }, { status: 400 });
+  }
+
+  if (!Array.isArray(selectedSlotIdsInput)) {
+    return NextResponse.json({ error: "At least one slot must be selected." }, { status: 400 });
+  }
+
+  const selectedSlotIds = selectedSlotIdsInput.map((value) => normalizeText(value));
+
+  if (selectedSlotIds.length === 0 || selectedSlotIds.some((slotId) => !slotId)) {
+    return NextResponse.json({ error: "At least one slot must be selected." }, { status: 400 });
+  }
+
+  if (new Set(selectedSlotIds).size !== selectedSlotIds.length) {
+    return NextResponse.json({ error: "Selected slots must be unique." }, { status: 400 });
+  }
+
+  const availableSlots = await prisma.slot.findMany({
+    where: {
+      id: {
+        in: selectedSlotIds
+      },
+      state: SlotState.ACCEPTING_APPLICATIONS
+    },
+    select: {
+      id: true
+    }
+  });
+
+  if (availableSlots.length !== selectedSlotIds.length) {
+    return NextResponse.json(
+      { error: "One or more selected slots are invalid or unavailable." },
+      { status: 400 }
+    );
   }
 
   const existing = await prisma.submission.findUnique({ where: { email } });
@@ -61,10 +96,16 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         email,
-        gender: sex,
+        gender,
         birthday,
         verificationToken: token,
-        tokenExpiresAt
+        tokenExpiresAt,
+        slotApplications: {
+          create: selectedSlotIds.map((slotId) => ({
+            slotId,
+            status: SlotApplicationStatus.APPLIED
+          }))
+        }
       }
     });
 

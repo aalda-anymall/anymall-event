@@ -1,4 +1,6 @@
+import { SlotState } from "@prisma/client";
 import { ApplicationForm } from "@/components/application-form";
+import { prisma } from "@/lib/prisma";
 
 type HomePageProps = {
   searchParams?: Promise<{ verified?: string }>;
@@ -19,6 +21,36 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const verificationMessage = verifiedStatus
     ? verificationMessages[verifiedStatus] ?? "Verification status is unknown."
     : null;
+  const slots = await prisma.slot.findMany({
+    where: {
+      state: SlotState.ACCEPTING_APPLICATIONS
+    },
+    include: {
+      venue: {
+        select: {
+          name: true
+        }
+      }
+    },
+    orderBy: {
+      startsAt: "asc"
+    }
+  });
+
+  const dayFormatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric"
+  });
+  const timeFormatter = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+
+  const slotOptions = slots.map((slot) => ({
+    id: slot.id,
+    label: `${slot.venue.name} — ${dayFormatter.format(slot.startsAt)}, ${timeFormatter.format(slot.startsAt)}–${timeFormatter.format(slot.endsAt)}`
+  }));
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
@@ -33,7 +65,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <p className="mt-2 text-sm text-slate-600">
           Submit your details. A verification email will be sent after submission.
         </p>
-        <ApplicationForm />
+        <ApplicationForm slotOptions={slotOptions} />
       </section>
     </main>
   );

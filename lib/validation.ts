@@ -2,7 +2,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const katakanaPattern = /^[\u30A0-\u30FFー・\s]+$/;
 const birthdayPattern = /^\d{4}-\d{2}-\d{2}$/;
 
-export type Sex = "male" | "female";
+export type Gender = "male" | "female";
 
 export function isValidEmail(email: string): boolean {
   return emailPattern.test(email);
@@ -12,7 +12,7 @@ export function isValidKatakanaName(name: string): boolean {
   return katakanaPattern.test(name) && name.trim().length > 0;
 }
 
-export function isValidSex(value: string): value is Sex {
+export function isValidGender(value: string): value is Gender {
   return value === "male" || value === "female";
 }
 

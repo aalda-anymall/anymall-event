@@ -5,14 +5,37 @@ import { FormEvent, useState } from "react";
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const katakanaPattern = /^[\u30A0-\u30FFー・\s]+$/;
 
-export function ApplicationForm() {
+export type AvailableSlotOption = {
+  id: string;
+  label: string;
+};
+
+type ApplicationFormProps = {
+  slotOptions: AvailableSlotOption[];
+};
+
+export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
+  const hasAvailableSlots = slotOptions.length > 0;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [sex, setSex] = useState<"" | "male" | "female">("");
+  const [gender, setGender] = useState<"" | "male" | "female">("");
+  const [selectedSlotIds, setSelectedSlotIds] = useState<Array<string>>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const selectedSlotSet = new Set(selectedSlotIds);
+
+  function toggleSlot(slotId: string) {
+    setSelectedSlotIds((current) => {
+      if (current.includes(slotId)) {
+        return current.filter((id) => id !== slotId);
+      }
+
+      return [...current, slotId];
+    });
+  }
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,7 +45,8 @@ export function ApplicationForm() {
     const normalizedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedBirthday = birthday.trim();
-    const normalizedSex = sex.trim();
+    const normalizedGender = gender.trim();
+    const dedupedSelectedSlotIds = Array.from(new Set(selectedSlotIds));
 
     if (!katakanaPattern.test(normalizedName)) {
       setError("Name must use katakana only.");
@@ -39,8 +63,18 @@ export function ApplicationForm() {
       return;
     }
 
-    if (normalizedSex !== "male" && normalizedSex !== "female") {
-      setError("Select a valid sex.");
+    if (normalizedGender !== "male" && normalizedGender !== "female") {
+      setError("Select a valid gender.");
+      return;
+    }
+
+    if (!hasAvailableSlots) {
+      setError("No slots are currently available.");
+      return;
+    }
+
+    if (dedupedSelectedSlotIds.length === 0) {
+      setError("Select at least one slot.");
       return;
     }
 
@@ -54,7 +88,8 @@ export function ApplicationForm() {
           name: normalizedName,
           email: normalizedEmail,
           birthday: normalizedBirthday,
-          sex: normalizedSex
+          gender: normalizedGender,
+          selectedSlotIds: dedupedSelectedSlotIds
         })
       });
 
@@ -63,7 +98,8 @@ export function ApplicationForm() {
         setName("");
         setEmail("");
         setBirthday("");
-        setSex("");
+        setGender("");
+        setSelectedSlotIds([]);
         return;
       }
 
@@ -125,13 +161,13 @@ export function ApplicationForm() {
       </div>
 
       <div>
-        <p className="mb-1 block text-sm font-medium text-slate-800">Sex</p>
+        <p className="mb-1 block text-sm font-medium text-slate-800">Gender</p>
         <div className="flex items-center gap-4 text-sm text-slate-700">
           <label className="inline-flex items-center gap-2">
             <input
-              checked={sex === "male"}
-              name="sex"
-              onChange={() => setSex("male")}
+              checked={gender === "male"}
+              name="gender"
+              onChange={() => setGender("male")}
               type="radio"
               value="male"
             />
@@ -139,9 +175,9 @@ export function ApplicationForm() {
           </label>
           <label className="inline-flex items-center gap-2">
             <input
-              checked={sex === "female"}
-              name="sex"
-              onChange={() => setSex("female")}
+              checked={gender === "female"}
+              name="gender"
+              onChange={() => setGender("female")}
               type="radio"
               value="female"
             />
@@ -150,13 +186,37 @@ export function ApplicationForm() {
         </div>
       </div>
 
+      <div>
+        <p className="mb-1 block text-sm font-medium text-slate-800">Available Slots</p>
+        {hasAvailableSlots ? (
+          <div className="max-h-56 space-y-2 overflow-y-auto rounded-md border border-slate-300 p-3">
+            {slotOptions.map((slot) => (
+              <label className="flex items-start gap-2 text-sm text-slate-700" key={slot.id}>
+                <input
+                  checked={selectedSlotSet.has(slot.id)}
+                  disabled={isSubmitting}
+                  onChange={() => toggleSlot(slot.id)}
+                  type="checkbox"
+                  value={slot.id}
+                />
+                <span>{slot.label}</span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+            No slots are currently available.
+          </p>
+        )}
+      </div>
+
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
       {success ? <p className="text-sm text-emerald-700">{success}</p> : null}
 
       <button
         className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-60"
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !hasAvailableSlots}
       >
         {isSubmitting ? "Submitting..." : "Apply"}
       </button>
