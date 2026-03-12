@@ -49,6 +49,8 @@ model Slot {
   id                  String           @id @default(cuid())
   venueId             String
   venue               Venue            @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  theme               String           @default("Not decided")
+  instructor          String           @default("Not decided")
   applicationBegin    DateTime
   applicationDeadline DateTime
   startsAt            DateTime

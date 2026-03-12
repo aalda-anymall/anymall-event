@@ -1,4 +1,9 @@
 import { SlotApplicationStatus } from "@prisma/client";
+import {
+  ApplicationFilters,
+  type ApplicationFilterSlotOption,
+  type ApplicationFilterVenueOption
+} from "@/components/application-filters";
 import { AdminNav } from "@/components/admin-nav";
 import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
@@ -9,17 +14,8 @@ type ApplicationsPageProps = {
 
 const statusOptions = Object.values(SlotApplicationStatus);
 
-const inputClassName =
-  "rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500";
-const secondaryButtonClassName =
-  "rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50";
-
 function isStatus(value: string): value is SlotApplicationStatus {
   return statusOptions.includes(value as SlotApplicationStatus);
-}
-
-function slotLabel(slot: { startsAt: Date; endsAt: Date; venue: { name: string } }): string {
-  return `${slot.venue.name} | ${slot.startsAt.toLocaleString()} - ${slot.endsAt.toLocaleString()}`;
 }
 
 function calculateAge(birthDate: Date): number {
@@ -50,14 +46,25 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
 
   const [venues, slots, applications] = await Promise.all([
     prisma.venue.findMany({
-    orderBy: {
-      name: "asc"
-    }
+      select: {
+        id: true,
+        name: true
+      },
+      orderBy: {
+        name: "asc"
+      }
     }),
     prisma.slot.findMany({
-      where: venueFilter ? { venueId: venueFilter } : {},
-      include: {
-        venue: true
+      select: {
+        id: true,
+        venueId: true,
+        startsAt: true,
+        endsAt: true,
+        venue: {
+          select: {
+            name: true
+          }
+        }
       },
       orderBy: {
         startsAt: "asc"
@@ -68,10 +75,20 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
         ...(emailFilter
           ? {
               submission: {
-                email: {
-                  contains: emailFilter,
-                  mode: "insensitive"
-                }
+                OR: [
+                  {
+                    email: {
+                      contains: emailFilter,
+                      mode: "insensitive"
+                    }
+                  },
+                  {
+                    name: {
+                      contains: emailFilter,
+                      mode: "insensitive"
+                    }
+                  }
+                ]
               }
             }
           : {}),
@@ -109,6 +126,18 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
     })
   ]);
 
+  const venueOptions: ApplicationFilterVenueOption[] = venues.map((venue) => ({
+    id: venue.id,
+    name: venue.name
+  }));
+  const slotOptions: ApplicationFilterSlotOption[] = slots.map((slot) => ({
+    id: slot.id,
+    venueId: slot.venueId,
+    startsAt: slot.startsAt.toISOString(),
+    endsAt: slot.endsAt.toISOString(),
+    venueName: slot.venue.name
+  }));
+
   const maleCount = applications.filter(
     (application) => application.submission.gender === "male"
   ).length;
@@ -124,68 +153,20 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
       <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Applications</h1>
 
-        <form className="mt-4 flex flex-wrap items-end gap-3" method="get">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-email">
-              Submission Email
-            </label>
-            <input
-              className={inputClassName}
-              defaultValue={emailFilter}
-              id="filter-email"
-              name="email"
-              placeholder="user@example.com"
-              type="text"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-venue">
-              Venue
-            </label>
-            <select className={inputClassName} defaultValue={slotFilter} id="filter-venue" name="venue">
-              <option value="">All venues</option>
-              {venues.map((venue) => (
-                <option key={venue.id} value={venue.id}>
-                  {venue.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-slot">
-              Slot
-            </label>
-            <select className={inputClassName} defaultValue={slotFilter} id="filter-slot" name="slot">
-              <option value="">All slots</option>
-              {slots.map((slot) => (
-                <option key={slot.id} value={slot.id}>
-                  {slotLabel(slot)}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-status">
-              Status
-            </label>
-            <select className={inputClassName} defaultValue={statusFilter} id="filter-status" name="status">
-              <option value="">All statuses</option>
-              {statusOptions.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button className={secondaryButtonClassName} type="submit">
-            Search
-          </button>
-        </form>
+        <ApplicationFilters
+          defaultEmail={emailFilter}
+          defaultSlot={slotFilter}
+          defaultStatus={statusFilter}
+          defaultVenue={venueFilter}
+          slots={slotOptions}
+          statusOptions={statusOptions}
+          venues={venueOptions}
+        />
 
         <div className="mt-6">
-            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-email">
-              Total Applications: {applications.length} | Males: {maleCount} | Females: {femaleCount}
-            </label>
+          <p className="mb-1 block text-xs font-medium text-slate-600">
+            Total Applications: {applications.length} | Males: {maleCount} | Females: {femaleCount}
+          </p>
         </div>
 
         <div className="mt-4 overflow-x-auto">
@@ -231,4 +212,3 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
     </main>
   );
 }
-

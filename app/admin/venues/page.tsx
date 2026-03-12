@@ -57,11 +57,16 @@ export default async function AdminVenuesPage({ searchParams }: VenuesPageProps)
           </button>
         </form>
 
+        <div className="mt-6">
+          <p className="mb-1 block text-xs font-medium text-slate-600">
+            Total venues: {venues.length}
+          </p>
+        </div>
+
         <div className="mt-6 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-left text-slate-600">
-                <th className="px-2 py-2">ID</th>
                 <th className="px-2 py-2">Name</th>
                 <th className="px-2 py-2">Address</th>
               </tr>
@@ -69,7 +74,6 @@ export default async function AdminVenuesPage({ searchParams }: VenuesPageProps)
             <tbody>
               {venues.map((venue) => (
                 <tr className="border-b border-slate-100 align-top" key={venue.id}>
-                  <td className="px-2 py-3 font-mono text-xs">{venue.id}</td>
                   <td className="px-2 py-3">{venue.name}</td>
                   <td className="px-2 py-3">{venue.address ?? "-"}</td>
                 </tr>

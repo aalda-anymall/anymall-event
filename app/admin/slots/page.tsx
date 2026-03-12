@@ -85,12 +85,19 @@ export default async function AdminSlotsPage({ searchParams }: SlotsPageProps) {
           </button>
         </form>
 
+        <div className="mt-6">
+          <p className="mb-1 block text-xs font-medium text-slate-600">
+            Total Slots: {slots.length} 
+          </p>
+        </div>
+
         <div className="mt-6 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-left text-slate-600">
-                <th className="px-2 py-2">ID</th>
                 <th className="px-2 py-2">Venue</th>
+                <th className="px-2 py-2">Instructor</th>
+                <th className="px-2 py-2">Theme</th>
                 <th className="px-2 py-2">Application Begin</th>
                 <th className="px-2 py-2">Application Deadline</th>
                 <th className="px-2 py-2">Starts At</th>
@@ -101,8 +108,9 @@ export default async function AdminSlotsPage({ searchParams }: SlotsPageProps) {
             <tbody>
               {slots.map((slot) => (
                 <tr className="border-b border-slate-100 align-top" key={slot.id}>
-                  <td className="px-2 py-3 font-mono text-xs">{slot.id}</td>
                   <td className="px-2 py-3">{slot.venue.name}</td>
+                  <td className="px-2 py-3">{slot.instructor}</td>
+                  <td className="px-2 py-3">{slot.theme}</td>
                   <td className="px-2 py-3">{slot.applicationBegin.toLocaleString()}</td>
                   <td className="px-2 py-3">{slot.applicationDeadline.toLocaleString()}</td>
                   <td className="px-2 py-3">{slot.startsAt.toLocaleString()}</td>

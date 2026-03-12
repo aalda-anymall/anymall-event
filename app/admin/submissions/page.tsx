@@ -24,10 +24,20 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
   const submissions = await prisma.submission.findMany({
     where: query
       ? {
-          email: {
-            contains: query,
-            mode: "insensitive"
-          }
+          OR: [
+            {
+              email: {
+                contains: query,
+                mode: "insensitive"
+              }
+            },
+            {
+              name: {
+                contains: query,
+                mode: "insensitive"
+              }
+            }
+          ]
         }
       : undefined,
     orderBy: {
@@ -45,14 +55,14 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
         <form className="mt-4 flex flex-wrap items-end gap-3" method="get">
           <div>
             <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="search-email">
-              Search Email
+              Search Email or Name
             </label>
             <input
               className={inputClassName}
               defaultValue={query}
-              id="search-email"
+              id="search-email-name"
               name="q"
-              placeholder="user@example.com"
+              placeholder="Email or name"
               type="text"
             />
           </div>
@@ -61,11 +71,16 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
           </button>
         </form>
 
+        <div className="mt-6">
+          <p className="mb-1 block text-xs font-medium text-slate-600">
+            Total Submissions: {submissions.length}
+          </p>
+        </div>
+
         <div className="mt-6 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-left text-slate-600">
-                <th className="px-2 py-2">ID</th>
                 <th className="px-2 py-2">Name</th>
                 <th className="px-2 py-2">Email</th>
                 <th className="px-2 py-2">Gender</th>
@@ -77,7 +92,6 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
             <tbody>
               {submissions.map((submission) => (
                 <tr className="border-b border-slate-100 align-top" key={submission.id}>
-                  <td className="px-2 py-3 font-mono text-xs">{submission.id}</td>
                   <td className="px-2 py-3">{submission.name}</td>
                   <td className="px-2 py-3">{submission.email}</td>
                   <td className="px-2 py-3">{submission.gender}</td>
@@ -100,4 +114,3 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
     </main>
   );
 }
-
