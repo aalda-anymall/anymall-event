@@ -4,7 +4,7 @@ import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 
 type ApplicationsPageProps = {
-  searchParams?: Promise<{ email?: string; slot?: string; status?: string }>;
+  searchParams?: Promise<{ email?: string; venue?: string; slot?: string; status?: string}>;
 };
 
 const statusOptions = Object.values(SlotApplicationStatus);
@@ -43,12 +43,19 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
 
   const params = await searchParams;
   const emailFilter = params?.email?.trim() ?? "";
+  const venueFilter = params?.venue?.trim() ?? "";
   const slotFilter = params?.slot?.trim() ?? "";
   const statusRaw = params?.status?.trim() ?? "";
   const statusFilter = isStatus(statusRaw) ? statusRaw : "";
 
-  const [slots, applications] = await Promise.all([
+  const [venues, slots, applications] = await Promise.all([
+    prisma.venue.findMany({
+    orderBy: {
+      name: "asc"
+    }
+    }),
     prisma.slot.findMany({
+      where: venueFilter ? { venueId: venueFilter } : {},
       include: {
         venue: true
       },
@@ -64,6 +71,15 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
                 email: {
                   contains: emailFilter,
                   mode: "insensitive"
+                }
+              }
+            }
+          : {}),
+        ...(venueFilter
+          ? {
+              slot: {
+                is: {
+                  venueId: venueFilter
                 }
               }
             }
@@ -93,6 +109,14 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
     })
   ]);
 
+  const maleCount = applications.filter(
+    (application) => application.submission.gender === "male"
+  ).length;
+
+  const femaleCount = applications.filter(
+    (application) => application.submission.gender === "female"
+  ).length;
+
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
       <AdminNav active="applications" />
@@ -113,6 +137,19 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
               placeholder="user@example.com"
               type="text"
             />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-venue">
+              Venue
+            </label>
+            <select className={inputClassName} defaultValue={slotFilter} id="filter-venue" name="venue">
+              <option value="">All venues</option>
+              {venues.map((venue) => (
+                <option key={venue.id} value={venue.id}>
+                  {venue.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-slot">
@@ -145,7 +182,13 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
           </button>
         </form>
 
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6">
+            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="filter-email">
+              Total Applications: {applications.length} | Males: {maleCount} | Females: {femaleCount}
+            </label>
+        </div>
+
+        <div className="mt-4 overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-left text-slate-600">
@@ -176,7 +219,7 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
               ))}
               {applications.length === 0 ? (
                 <tr>
-                  <td className="px-2 py-4 text-slate-500" colSpan={6}>
+                  <td className="px-2 py-4 text-slate-500" colSpan={8}>
                     No applications found.
                   </td>
                 </tr>
