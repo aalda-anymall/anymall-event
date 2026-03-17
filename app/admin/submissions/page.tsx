@@ -54,7 +54,7 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
 
         <form className="mt-4 flex flex-wrap items-end gap-3" method="get">
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="search-email">
+            <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="search-email-name">
               Search Email or Name
             </label>
             <input
@@ -85,7 +85,6 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
                 <th className="px-2 py-2">Email</th>
                 <th className="px-2 py-2">Gender</th>
                 <th className="px-2 py-2">Birthday</th>
-                <th className="px-2 py-2">Verified</th>
                 <th className="px-2 py-2">Created At</th>
               </tr>
             </thead>
@@ -96,13 +95,12 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
                   <td className="px-2 py-3">{submission.email}</td>
                   <td className="px-2 py-3">{submission.gender}</td>
                   <td className="px-2 py-3">{toDateInputValue(submission.birthday)}</td>
-                  <td className="px-2 py-3">{submission.verified ? "Yes" : "No"}</td>
                   <td className="px-2 py-3">{submission.createdAt.toLocaleString()}</td>
                 </tr>
               ))}
               {submissions.length === 0 ? (
                 <tr>
-                  <td className="px-2 py-4 text-slate-500" colSpan={7}>
+                  <td className="px-2 py-4 text-slate-500" colSpan={5}>
                     No submissions found.
                   </td>
                 </tr>

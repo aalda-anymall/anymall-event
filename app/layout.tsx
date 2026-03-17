@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Anymall Event Application",
-  description: "Simple event application form with email verification."
+  description: "Simple event application form with confirmation email."
 };
 
 type RootLayoutProps = {

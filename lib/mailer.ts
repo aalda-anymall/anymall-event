@@ -1,41 +1,51 @@
-import { Resend } from "resend";
+import sgMail, { type MailDataRequired } from "@sendgrid/mail";
 
-type SendVerificationEmailInput = {
+type SendApplicationReceivedEmailInput = {
   to: string;
-  token: string;
-  baseUrl: string;
 };
 
-export async function sendVerificationEmail({
-  to,
-  token,
-  baseUrl
-}: SendVerificationEmailInput): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
+export async function sendApplicationReceivedEmail({
+  to
+}: SendApplicationReceivedEmailInput): Promise<void> {
+  const apiKey = process.env.SENDGRID_API_KEY;
   const from = process.env.EMAIL_FROM;
 
   if (!apiKey) {
-    throw new Error("RESEND_API_KEY is missing.");
+    throw new Error("SENDGRID_API_KEY is missing.");
   }
 
   if (!from) {
     throw new Error("EMAIL_FROM is missing.");
   }
 
-  const resend = new Resend(apiKey);
-  const verifyUrl = `${baseUrl}/api/verify?token=${encodeURIComponent(token)}`;
+  sgMail.setApiKey(apiKey);
 
-  await resend.emails.send({
-    from,
+  const fromMatch = from.match(/^(.+?)\s*<([^>]+)>$/);
+  const fromField: MailDataRequired["from"] = fromMatch
+    ? {
+        name: fromMatch[1].trim(),
+        email: fromMatch[2].trim()
+      }
+    : from;
+
+  const message: MailDataRequired = {
+    from: fromField,
     to,
-    subject: "Verify your lunch event application",
-    text: `Click this link to verify your application: ${verifyUrl}`,
+    subject: "Application Received",
+    text: "Your application has been received successfully.",
     html: `
-      <p>Thanks for applying to the lunch event.</p>
-      <p>Please verify your email by clicking the link below:</p>
-      <p><a href="${verifyUrl}">Verify my application</a></p>
-      <p>This link expires in 24 hours.</p>
+      <p>Thanks for applying.</p>
+      <p>Your application has been received successfully.</p>
     `
-  });
-}
+  };
 
+  try {
+    await sgMail.send(message);
+  } catch (error) {
+    const maybeResponse = error as { response?: { body?: unknown } };
+    if (maybeResponse.response?.body) {
+      console.error("SendGrid response body:", maybeResponse.response.body);
+    }
+    throw error;
+  }
+}

@@ -93,8 +93,15 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
         })
       });
 
+      const data = (await response.json().catch(() => null)) as
+        | { error?: string; warning?: string }
+        | null;
+
       if (response.ok) {
-        setSuccess("Thanks. Please check your inbox and click the verification link.");
+        const successMessage = data?.warning
+          ? `Application received. ${data.warning}`
+          : "Application received. A confirmation email has been sent.";
+        setSuccess(successMessage);
         setName("");
         setEmail("");
         setBirthday("");
@@ -103,9 +110,6 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
         return;
       }
 
-      const data = (await response.json().catch(() => null)) as
-        | { error?: string }
-        | null;
       setError(data?.error ?? "Submission failed.");
     } catch {
       setError("Submission failed. Please try again.");

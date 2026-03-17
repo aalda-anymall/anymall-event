@@ -27,10 +27,6 @@ model Submission {
   email             String           @unique
   gender            String
   birthday          DateTime
-  verified          Boolean          @default(false)
-  verifiedAt        DateTime?
-  verificationToken String?          @unique
-  tokenExpiresAt    DateTime?
   slotApplications  SubmissionSlot[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
@@ -66,17 +62,18 @@ model Slot {
 }
 
 model SubmissionSlot {
-  id           String                @id @default(cuid())
-  submissionId String
-  slotId       String
+  id                  String                @id @default(cuid())
+  submissionId        String
+  slotId              String
   submissionAttemptId String
-  submission   Submission            @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  slot         Slot                  @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  appliedAt    DateTime              @default(now())
-  status       SlotApplicationStatus @default(APPLIED)
-  notes        String?
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  receiptEmailSentAt  DateTime?
+  submission          Submission            @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  slot                Slot                  @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  appliedAt           DateTime              @default(now())
+  status              SlotApplicationStatus @default(APPLIED)
+  notes               String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
 
   @@unique([submissionId, slotId, submissionAttemptId])
   @@index([slotId, status])

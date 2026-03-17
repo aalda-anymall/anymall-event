@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Prisma, SlotApplicationStatus, SlotState } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { sendVerificationEmail } from "@/lib/mailer";
+import { sendApplicationReceivedEmail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
 import { isValidEmail, isValidGender, isValidKatakanaName, parseBirthday } from "@/lib/validation";
 
@@ -24,21 +24,69 @@ async function createDuplicateSubmissionAttemptRows(
 ): Promise<void> {
   const existingSlotApplications = await prisma.submissionSlot.findMany({
     where: { submissionId },
-    select: { slotId: true }
+    select: { slotId: true, status: true}
   });
   const existingSlotIdSet = new Set(existingSlotApplications.map((row) => row.slotId));
+
+  const hasAcceptedSlot = existingSlotApplications.some(
+    (row) => row.status === SlotApplicationStatus.ACCEPTED
+  );
 
   await prisma.submissionSlot.createMany({
     data: selectedSlotIds.map((slotId) => ({
       submissionId,
       slotId,
       submissionAttemptId,
-      status: existingSlotIdSet.has(slotId)
+      status: hasAcceptedSlot || existingSlotIdSet.has(slotId)
         ? SlotApplicationStatus.REJECTED
         : SlotApplicationStatus.APPLIED
     })),
     skipDuplicates: true
   });
+}
+
+async function markAttemptReceiptSent(submissionId: string, submissionAttemptId: string): Promise<void> {
+  await prisma.submissionSlot.updateMany({
+    where: {
+      submissionId,
+      submissionAttemptId
+    },
+    data: {
+      receiptEmailSentAt: new Date()
+    }
+  });
+}
+
+async function rejectAttemptRows(submissionId: string, submissionAttemptId: string): Promise<void> {
+  await prisma.submissionSlot.updateMany({
+    where: {
+      submissionId,
+      submissionAttemptId
+    },
+    data: {
+      status: SlotApplicationStatus.REJECTED,
+      receiptEmailSentAt: null
+    }
+  });
+}
+
+async function sendReceiptOrRejectAttempt(
+  submissionId: string,
+  submissionAttemptId: string,
+  email: string
+): Promise<{ emailSent: boolean; warning?: string }> {
+  try {
+    await sendApplicationReceivedEmail({ to: email });
+    await markAttemptReceiptSent(submissionId, submissionAttemptId);
+    return { emailSent: true };
+  } catch {
+    await rejectAttemptRows(submissionId, submissionAttemptId);
+    return {
+      emailSent: false,
+      warning:
+        "Application was received, but we could not send a confirmation email. The new application attempt was marked as rejected."
+    };
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -113,12 +161,13 @@ export async function POST(request: NextRequest) {
   });
   if (existing) {
     await createDuplicateSubmissionAttemptRows(existing.id, selectedSlotIds, submissionAttemptId);
-    return NextResponse.json({ ok: true }, { status: 200 });
+    const receiptResult = await sendReceiptOrRejectAttempt(
+      existing.id,
+      submissionAttemptId,
+      email
+    );
+    return NextResponse.json({ ok: true, ...receiptResult }, { status: 200 });
   }
-
-  const token = randomUUID();
-  const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-  const baseUrl = (process.env.APP_URL ?? request.nextUrl.origin).replace(/\/$/, "");
 
   try {
     const created = await prisma.submission.create({
@@ -127,8 +176,6 @@ export async function POST(request: NextRequest) {
         email,
         gender,
         birthday,
-        verificationToken: token,
-        tokenExpiresAt,
         slotApplications: {
           create: selectedSlotIds.map((slotId) => ({
             slotId,
@@ -139,18 +186,12 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    try {
-      await sendVerificationEmail({
-        to: email,
-        token,
-        baseUrl
-      });
-    } catch (emailError) {
-      await prisma.submission.delete({ where: { id: created.id } }).catch(() => {});
-      throw emailError;
-    }
-
-    return NextResponse.json({ ok: true }, { status: 201 });
+    const receiptResult = await sendReceiptOrRejectAttempt(
+      created.id,
+      submissionAttemptId,
+      email
+    );
+    return NextResponse.json({ ok: true, ...receiptResult }, { status: 201 });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -167,7 +208,12 @@ export async function POST(request: NextRequest) {
           selectedSlotIds,
           submissionAttemptId
         ).catch(() => {});
-        return NextResponse.json({ ok: true }, { status: 200 });
+        const receiptResult = await sendReceiptOrRejectAttempt(
+          existingSubmission.id,
+          submissionAttemptId,
+          email
+        );
+        return NextResponse.json({ ok: true, ...receiptResult }, { status: 200 });
       }
     }
 
