@@ -11,6 +11,9 @@ const config: Config = {
         sans: ["var(--font-inter)", "var(--font-noto-sans-jp)", "sans-serif"],
         serif: ["var(--font-noto-serif-jp)", "serif"],
       },
+      maxWidth: {
+        "6xl": "72rem",
+      },
       colors: {
         brand: {
           green: "#7cb342",
@@ -32,6 +35,11 @@ const config: Config = {
           700: "#48604d",
           800: "#3d3d3d",
           900: "#2c2520",
+          accent: "#C4A882",
+        },
+        status: {
+          amber: "#d48806",
+          "amber-bg": "#fef8f0",
         },
       },
     },

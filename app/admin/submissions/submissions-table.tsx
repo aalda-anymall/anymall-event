@@ -50,25 +50,28 @@ function formatSubmissionCreatedAt(value: string): string {
   const dateText = new Intl.DateTimeFormat("sv-SE", {
     year: "numeric",
     month: "2-digit",
-    day: "2-digit"
+    day: "2-digit",
   }).format(date);
 
   const timeText = new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false
+    hour12: false,
   }).format(date);
 
   return `${dateText} ${timeText}`;
 }
 
-function deriveBirthdayFromAge(existingBirthdayIso: string, age: number): string {
+function deriveBirthdayFromAge(
+  existingBirthdayIso: string,
+  age: number,
+): string {
   const today = new Date();
   const existingBirthday = new Date(existingBirthdayIso);
   const nextBirthday = new Date(
     today.getFullYear(),
     existingBirthday.getUTCMonth(),
-    existingBirthday.getUTCDate()
+    existingBirthday.getUTCDate(),
   );
 
   let birthYear = today.getFullYear() - age;
@@ -76,19 +79,27 @@ function deriveBirthdayFromAge(existingBirthdayIso: string, age: number): string
     birthYear -= 1;
   }
 
-  const nextBirthdayMonth = String(existingBirthday.getUTCMonth() + 1).padStart(2, "0");
-  const nextBirthdayDay = String(existingBirthday.getUTCDate()).padStart(2, "0");
+  const nextBirthdayMonth = String(existingBirthday.getUTCMonth() + 1).padStart(
+    2,
+    "0",
+  );
+  const nextBirthdayDay = String(existingBirthday.getUTCDate()).padStart(
+    2,
+    "0",
+  );
 
   return `${birthYear}-${nextBirthdayMonth}-${nextBirthdayDay}`;
 }
 
-function getInitialFormState(submission: SubmissionTableRow): SubmissionFormState {
+function getInitialFormState(
+  submission: SubmissionTableRow,
+): SubmissionFormState {
   return {
     name: submission.name,
     email: submission.email,
     gender: submission.gender,
     ageText: String(submission.age),
-    prefecture: submission.prefecture
+    prefecture: submission.prefecture,
   };
 }
 
@@ -110,7 +121,11 @@ function validateSubmissionForm(values: SubmissionFormState): string | null {
   }
 
   const age = Number.parseInt(ageText, 10);
-  if (!Number.isInteger(age) || age < minSubmissionAge || age > maxSubmissionAge) {
+  if (
+    !Number.isInteger(age) ||
+    age < minSubmissionAge ||
+    age > maxSubmissionAge
+  ) {
     return `年齢は${minSubmissionAge}から${maxSubmissionAge}までの整数で入力してください。`;
   }
 
@@ -124,11 +139,15 @@ function validateSubmissionForm(values: SubmissionFormState): string | null {
 export function SubmissionsTable({
   submissions,
   genderOptions,
-  prefectureOptions
+  prefectureOptions,
 }: SubmissionsTableProps) {
   const [submissionRows, setSubmissionRows] = useState(submissions);
-  const [selectedSubmissionId, setSelectedSubmissionId] = useState<string | null>(null);
-  const [formValues, setFormValues] = useState<SubmissionFormState | null>(null);
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<
+    string | null
+  >(null);
+  const [formValues, setFormValues] = useState<SubmissionFormState | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -137,8 +156,11 @@ export function SubmissionsTable({
   }, [submissions]);
 
   const selectedSubmission = useMemo(
-    () => submissionRows.find((submission) => submission.id === selectedSubmissionId) ?? null,
-    [selectedSubmissionId, submissionRows]
+    () =>
+      submissionRows.find(
+        (submission) => submission.id === selectedSubmissionId,
+      ) ?? null,
+    [selectedSubmissionId, submissionRows],
   );
 
   useEffect(() => {
@@ -179,9 +201,11 @@ export function SubmissionsTable({
 
   function updateFormValue<Key extends keyof SubmissionFormState>(
     key: Key,
-    value: SubmissionFormState[Key]
+    value: SubmissionFormState[Key],
   ) {
-    setFormValues((current) => (current ? { ...current, [key]: value } : current));
+    setFormValues((current) =>
+      current ? { ...current, [key]: value } : current,
+    );
   }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -204,23 +228,27 @@ export function SubmissionsTable({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/admin/submissions/${selectedSubmission.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
+      const response = await fetch(
+        `/api/admin/submissions/${selectedSubmission.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formValues.name.trim(),
+            email: formValues.email.trim(),
+            gender: formValues.gender,
+            birthday,
+            prefecture: formValues.prefecture,
+          }),
         },
-        body: JSON.stringify({
-          name: formValues.name.trim(),
-          email: formValues.email.trim(),
-          gender: formValues.gender,
-          birthday,
-          prefecture: formValues.prefecture
-        })
-      });
+      );
 
-      const payload = (await response.json().catch(() => null)) as
-        | { error?: string; submission?: SubmissionTableRow }
-        | null;
+      const payload = (await response.json().catch(() => null)) as {
+        error?: string;
+        submission?: SubmissionTableRow;
+      } | null;
 
       if (!response.ok || !payload?.submission) {
         setErrorMessage(payload?.error ?? "申込を更新できませんでした。");
@@ -229,8 +257,10 @@ export function SubmissionsTable({
 
       setSubmissionRows((current) =>
         current.map((submission) =>
-          submission.id === payload.submission?.id ? payload.submission : submission
-        )
+          submission.id === payload.submission?.id
+            ? payload.submission
+            : submission,
+        ),
       );
       setSelectedSubmissionId(null);
     } catch {
@@ -272,10 +302,14 @@ export function SubmissionsTable({
               >
                 <td className="px-2 py-3">{submission.name}</td>
                 <td className="px-2 py-3">{submission.email}</td>
-                <td className="px-2 py-3">{getGenderLabel(submission.gender)}</td>
+                <td className="px-2 py-3">
+                  {getGenderLabel(submission.gender)}
+                </td>
                 <td className="px-2 py-3">{submission.age}</td>
                 <td className="px-2 py-3">{submission.prefecture}</td>
-                <td className="px-2 py-3">{formatSubmissionCreatedAt(submission.createdAt)}</td>
+                <td className="px-2 py-3">
+                  {formatSubmissionCreatedAt(submission.createdAt)}
+                </td>
               </tr>
             ))}
             {submissionRows.length === 0 ? (
@@ -302,8 +336,12 @@ export function SubmissionsTable({
           >
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">申込編集</h2>
-                <p className="mt-1 text-sm text-slate-500">{selectedSubmission.name}</p>
+                <h2 className="text-lg font-semibold text-slate-900">
+                  申込編集
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  {selectedSubmission.name}
+                </p>
               </div>
               <button
                 className={secondaryButtonClassName}
@@ -316,41 +354,56 @@ export function SubmissionsTable({
             </div>
 
             <form className="space-y-5 px-6 py-5" onSubmit={onSubmit}>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="submission-name">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="submission-name"
+                  >
                     名前
                   </label>
                   <input
                     className={textInputClassName}
                     id="submission-name"
-                    onChange={(event) => updateFormValue("name", event.target.value)}
+                    onChange={(event) =>
+                      updateFormValue("name", event.target.value)
+                    }
                     type="text"
                     value={formValues.name}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="submission-email">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="submission-email"
+                  >
                     メイル
                   </label>
                   <input
                     className={textInputClassName}
                     id="submission-email"
-                    onChange={(event) => updateFormValue("email", event.target.value)}
+                    onChange={(event) =>
+                      updateFormValue("email", event.target.value)
+                    }
                     type="text"
                     value={formValues.email}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="submission-gender">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="submission-gender"
+                  >
                     性別
                   </label>
                   <select
                     className={selectInputClassName}
                     id="submission-gender"
-                    onChange={(event) => updateFormValue("gender", event.target.value as Gender)}
+                    onChange={(event) =>
+                      updateFormValue("gender", event.target.value as Gender)
+                    }
                     value={formValues.gender}
                   >
                     {genderOptions.map((gender) => (
@@ -362,28 +415,42 @@ export function SubmissionsTable({
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="submission-age">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="submission-age"
+                  >
                     年齢
                   </label>
                   <input
                     className={textInputClassName}
                     id="submission-age"
                     inputMode="numeric"
-                    onChange={(event) => updateFormValue("ageText", event.target.value.replace(/\D/g, ""))}
+                    onChange={(event) =>
+                      updateFormValue(
+                        "ageText",
+                        event.target.value.replace(/\D/g, ""),
+                      )
+                    }
                     type="text"
                     value={formValues.ageText}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="submission-prefecture">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="submission-prefecture"
+                  >
                     都道府県
                   </label>
                   <select
                     className={selectInputClassName}
                     id="submission-prefecture"
                     onChange={(event) =>
-                      updateFormValue("prefecture", event.target.value as SubmissionFormState["prefecture"])
+                      updateFormValue(
+                        "prefecture",
+                        event.target.value as SubmissionFormState["prefecture"],
+                      )
                     }
                     value={formValues.prefecture}
                   >
@@ -397,7 +464,9 @@ export function SubmissionsTable({
                 </div>
 
                 <div>
-                  <p className="mb-1 text-xs font-medium text-slate-600">申込日時</p>
+                  <p className="mb-1 text-xs font-medium text-slate-600">
+                    申込日時
+                  </p>
                   <div className={detailFieldClassName}>
                     {formatSubmissionCreatedAt(selectedSubmission.createdAt)}
                   </div>
@@ -419,7 +488,11 @@ export function SubmissionsTable({
                 >
                   キャンセル
                 </button>
-                <button className={primaryButtonClassName} disabled={isSubmitting} type="submit">
+                <button
+                  className={primaryButtonClassName}
+                  disabled={isSubmitting}
+                  type="submit"
+                >
                   {isSubmitting ? "保存中..." : "保存"}
                 </button>
               </div>
