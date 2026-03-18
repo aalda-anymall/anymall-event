@@ -99,12 +99,6 @@ export default async function AdminSlotsPage({ searchParams }: SlotsPageProps) {
               <tr className="border-b border-slate-200 text-left text-slate-600">
                 <th className="px-2 py-2">イベント名</th>
                 <th className="px-2 py-2">会場</th>
-                <th className="px-2 py-2">インストラクター</th>
-                <th className="px-2 py-2">テーマ</th>
-                <th className="px-2 py-2">定員</th>
-                <th className="px-2 py-2">応募開始日時</th>
-                <th className="px-2 py-2">応募締切日時</th>
-                <th className="px-2 py-2">抽選結果発表日時</th>
                 <th className="px-2 py-2">開催日時</th>
                 <th className="px-2 py-2">状態</th>
               </tr>
@@ -114,18 +108,6 @@ export default async function AdminSlotsPage({ searchParams }: SlotsPageProps) {
                 <tr className="border-b border-slate-100 align-top" key={slot.id}>
                   <td className="px-2 py-3">{slot.eventName}</td>
                   <td className="px-2 py-3">{slot.venue.name}</td>
-                  <td className="px-2 py-3">{slot.instructor}</td>
-                  <td className="px-2 py-3">
-                    <ul className="space-y-1">
-                      {getThemeBulletLines(slot.theme).map((line) => (
-                        <li key={line}>• {line}</li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td className="px-2 py-3">{getCapacityLabel(slot.capacity)}</td>
-                  <td className="px-2 py-3">{slot.applicationBegin.toLocaleString()}</td>
-                  <td className="px-2 py-3">{slot.applicationDeadline.toLocaleString()}</td>
-                  <td className="px-2 py-3">{slot.lotteryResultTime.toLocaleString()}</td>
                   <td className="px-2 py-3">{formatAdminSlotDateTimeRange(slot.startsAt, slot.endsAt)}</td>
                   <td className="px-2 py-3">{getSlotStateLabel(slot.state)}</td>
                 </tr>

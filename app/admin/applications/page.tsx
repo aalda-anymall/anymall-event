@@ -123,7 +123,7 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
         }
       },
       orderBy: {
-        appliedAt: "desc"
+        createdAt: "desc"
       }
     })
   ]);
@@ -145,6 +145,18 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
   const unspecifiedCount = applications.filter(
     (application) => application.submission.gender === "UNSPECIFIED"
   ).length;
+
+  const dateText = new Intl.DateTimeFormat("sv-SE", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
@@ -193,7 +205,7 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
                   <td className="px-2 py-3">{application.slot.venue.name}</td>
                   <td className="px-2 py-3">{formatAdminSlotDateTimeRange(application.slot.startsAt, application.slot.endsAt)}</td>
                   <td className="px-2 py-3">{getSlotApplicationStatusLabel(application.status)}</td>
-                  <td className="px-2 py-3">{application.appliedAt.toLocaleString()}</td>
+                  <td className="px-2 py-3">{dateText.format(application.createdAt)} {timeFormatter.format(application.createdAt)}</td>
                 </tr>
               ))}
               {applications.length === 0 ? (

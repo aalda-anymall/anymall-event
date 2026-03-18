@@ -2,6 +2,7 @@ import { AdminNav } from "@/components/admin-nav";
 import { requireAdminSession } from "@/lib/admin-guard";
 import { getGenderLabel } from "@/lib/labels";
 import { prisma } from "@/lib/prisma";
+import { time } from "console";
 
 type SubmissionsPageProps = {
   searchParams?: Promise<{ q?: string }>;
@@ -58,6 +59,18 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
     }
   });
 
+  const dateText = new Intl.DateTimeFormat("sv-SE", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
       <AdminNav active="submissions" />
@@ -108,7 +121,7 @@ export default async function AdminSubmissionsPage({ searchParams }: Submissions
                   <td className="px-2 py-3">{submission.email}</td>
                   <td className="px-2 py-3">{getGenderLabel(submission.gender)}</td>
                   <td className="px-2 py-3">{calculateAge(submission.birthday)}</td>
-                  <td className="px-2 py-3">{submission.createdAt.toLocaleString()}</td>
+                  <td className="px-2 py-3">{dateText.format(submission.createdAt)} {timeFormatter.format(submission.createdAt)}</td>
                 </tr>
               ))}
               {submissions.length === 0 ? (
