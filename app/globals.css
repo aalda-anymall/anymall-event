@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #f4f7fb 0%, #ffffff 45%);
-  color: #1f2937;
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  min-height: 100vh;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "halt";
+}
