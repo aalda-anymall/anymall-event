@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { prefectureOptions } from "@/lib/labels";
 import { getMemoMaxLength } from "@/lib/validation";
 import { Icon } from "@/components/icon";
@@ -339,9 +340,16 @@ function ConfirmStep({
 
 function CompleteStep() {
   return (
-    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-4 py-16 md:px-0">
-      <div className="flex size-16 items-center justify-center rounded-full bg-brand-green">
-        <Icon className="text-white" name="Check" size={32} />
+    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-4 pb-16 md:px-0">
+      <div className="flex w-[90%] items-center justify-center">
+        {/* <Icon className="text-white" name="Check" size={32} /> */}
+        <Image
+          className="rounded-[36px]"
+          src="/images/fig-family.jpg"
+          alt=""
+          width={512}
+          height={512}
+        />
       </div>
 
       <div className="flex flex-col items-center gap-3 text-center">
