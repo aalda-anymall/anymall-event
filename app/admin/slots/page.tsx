@@ -3,7 +3,7 @@ import { AdminNav } from "@/components/admin-nav";
 import { requireAdminSession } from "@/lib/admin-guard";
 import { getSlotStateLabel } from "@/lib/labels";
 import { prisma } from "@/lib/prisma";
-import { formatAdminSlotDateTimeRange, getCapacityLabel, getThemeBulletLines } from "@/lib/slot-display";
+import { SlotsTable, type SlotTableRow } from "./slots-table";
 
 type SlotsPageProps = {
   searchParams?: Promise<{ venue?: string; state?: string }>;
@@ -93,35 +93,23 @@ export default async function AdminSlotsPage({ searchParams }: SlotsPageProps) {
           </p>
         </div>
 
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 text-left text-slate-600">
-                <th className="px-2 py-2">イベント名</th>
-                <th className="px-2 py-2">会場</th>
-                <th className="px-2 py-2">開催日時</th>
-                <th className="px-2 py-2">状態</th>
-              </tr>
-            </thead>
-            <tbody>
-              {slots.map((slot) => (
-                <tr className="border-b border-slate-100 align-top" key={slot.id}>
-                  <td className="px-2 py-3">{slot.eventName}</td>
-                  <td className="px-2 py-3">{slot.venue.name}</td>
-                  <td className="px-2 py-3">{formatAdminSlotDateTimeRange(slot.startsAt, slot.endsAt)}</td>
-                  <td className="px-2 py-3">{getSlotStateLabel(slot.state)}</td>
-                </tr>
-              ))}
-              {slots.length === 0 ? (
-                <tr>
-                  <td className="px-2 py-4 text-slate-500" colSpan={9}>
-                    スロットはありません
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
+        <SlotsTable
+          slots={slots.map(
+            (slot): SlotTableRow => ({
+              id: slot.id,
+              eventName: slot.eventName,
+              venueName: slot.venue.name,
+              theme: slot.theme,
+              instructor: slot.instructor,
+              capacity: slot.capacity,
+              applicationBegin: slot.applicationBegin.toISOString(),
+              applicationDeadline: slot.applicationDeadline.toISOString(),
+              startsAt: slot.startsAt.toISOString(),
+              endsAt: slot.endsAt.toISOString(),
+              state: slot.state
+            })
+          )}
+        />
       </section>
     </main>
   );
