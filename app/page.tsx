@@ -58,7 +58,7 @@ export default async function HomePage() {
               src="/images/hero.png"
               alt="愛犬と過ごす特別なひととき"
               fill
-              className="object-cover pb-40 md:pb-0"
+              className="object-cover pb-44 md:pb-0"
               priority
             />
           </div>
@@ -71,13 +71,13 @@ export default async function HomePage() {
           />
 
           <div className="absolute left-0 bottom-0 w-full flex flex-col items-center pb-32 md:pb-0">
-            <div className="flex flex-col md:block items-center gap-4 px-4 md:w-7xl md:pb-52 md:px-0">
-              <h1 className="text-center md:text-right font-serif text-[32px] leading-[48px] text-brand-green-accent md:text-[40px] md:leading-[56px] md:leading-[150%]">
-                <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:text-[64px]">
+            <div className="flex flex-col md:block items-center gap-4 px-4 w-[95%] md:max-w-7xl md:pb-52 md:px-0">
+              <h1 className="text-center md:text-right font-serif text-[32px] leading-[48px] text-brand-green-accent sm:text-[32px] md:text-[48px] md:leading-[56px] md:leading-[150%]">
+                <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3">
                   愛犬と過ごす、
                 </span>
                 <br />
-                <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:text-[64px] md:ml-10">
+                <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:ml-10">
                   特別なひととき。
                 </span>
               </h1>
