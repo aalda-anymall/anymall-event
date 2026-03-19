@@ -156,10 +156,19 @@ export function EventSection({
     <>
       <section
         id="events"
-        className="bg-warm-100 px-4 py-8 md:px-8 md:py-16 overflow-hidden"
+        className="bg-warm-100 px-4 py-8 pb-16 md:px-8 md:py-16 overflow-hidden"
       >
         <div className="relative mx-auto flex max-w-6xl flex-col gap-8">
           <SectionHeading sub="Schedule" label={`開催スケジュール`} />
+          <div className="absolute z-10 -bottom-12 -right-0 rotate-180">
+            <Image
+              // className="slideDown"
+              src="/images/fig-cat.jpg"
+              alt=""
+              width={95}
+              height={120}
+            />
+          </div>
 
           <p className="text-base leading-7 text-warm-600 md:text-center">
             以下の​スケジュールで​イベント開催予定です。
@@ -237,15 +246,6 @@ export function EventSection({
               )}
             </div>
           )}
-          <div className="absolute z-10 -bottom-8 md:bottom-48 -right-0 md:-right-20 rotate-180 md:rotate-60">
-            <Image
-              className=""
-              src="/images/fig-cat.jpg"
-              alt=""
-              width={95}
-              height={120}
-            />
-          </div>
         </div>
       </section>
 

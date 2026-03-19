@@ -30,20 +30,13 @@ body {
 
 .slideIn {
   animation: slideIn 1s ease both;
-  animation-timeline: view();
-  animation-range: contain 0% contain 25%;
+  animation-timeline: view(block);
+  animation-range: contain 0% contain 35%;
 }
 
-.slideIn2 {
-  animation: slideIn 1s ease both;
-  animation-timeline: view();
-  animation-range: cover 0% contain 5%;
-}
-
-.slideLtR {
-  animation: slideLtR 1s ease both;
-  animation-timeline: view();
-  animation-range: contain 0% contain 25%;
+.slideDown {
+  animation: slideDown 1s ease both;
+  animation-timeline: view(block 80% 5%);
 }
 
 @keyframes slideIn {
@@ -55,11 +48,11 @@ body {
   }
 }
 
-@keyframes slideLtR {
+@keyframes slideDown {
   0% {
-    transform: translateX(-36px);
+    transform: translateY(0);
   }
   100% {
-    transform: translateX(0);
+    transform: translateY(-24px);
   }
 }

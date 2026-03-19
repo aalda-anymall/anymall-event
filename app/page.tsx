@@ -96,7 +96,7 @@ export default async function HomePage() {
           <a
             href="#events"
             className="absolute left-1/2 bottom-[32px] -translate-x-1/2 rounded-full bg-brand-green px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-brand-green-dark md:bottom-[30px] fadeIn"
-          // style={{ animationDuration: "3000ms" }}
+            // style={{ animationDuration: "3000ms" }}
           >
             イベントを見る ↓
           </a>
@@ -231,13 +231,15 @@ export default async function HomePage() {
                   </div>
                 </div>
               ))}
-              <Image
-                className="absolute z-10 -top-24 -left-1 md:-left-10 -rotate-30"
-                src="/images/fig-dog.jpg"
-                alt=""
-                width={168}
-                height={214}
-              />
+              <div className="absolute z-10 -top-24 -left-1 md:-left-10 -rotate-30">
+                <Image
+                  // className="slideIn"
+                  src="/images/fig-dog.jpg"
+                  alt=""
+                  width={168}
+                  height={214}
+                />
+              </div>
             </div>
           </div>
         </section>
