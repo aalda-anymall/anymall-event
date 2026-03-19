@@ -46,8 +46,9 @@ export function VenueGallery({ images, venueName }: VenueGalleryProps) {
           <button
             key={src}
             type="button"
-            onClick={() => setOpenIndex(i)}
-            className="relative aspect-[4/3] overflow-hidden rounded-lg bg-warm-300 transition-opacity hover:opacity-80"
+            // onClick={() => setOpenIndex(i)}
+            // className="relative aspect-[4/3] overflow-hidden rounded-lg bg-warm-300 transition-opacity hover:opacity-80"
+            className="relative aspect-[4/3] overflow-hidden rounded-lg bg-warm-300"
           >
             <Image
               src={src}
@@ -80,9 +81,7 @@ export function VenueGallery({ images, venueName }: VenueGalleryProps) {
               <button
                 type="button"
                 onClick={() =>
-                  setOpenIndex(
-                    (openIndex - 1 + images.length) % images.length,
-                  )
+                  setOpenIndex((openIndex - 1 + images.length) % images.length)
                 }
                 className="absolute left-3 z-10 flex size-10 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60 md:left-6"
               >
@@ -90,9 +89,7 @@ export function VenueGallery({ images, venueName }: VenueGalleryProps) {
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  setOpenIndex((openIndex + 1) % images.length)
-                }
+                onClick={() => setOpenIndex((openIndex + 1) % images.length)}
                 className="absolute right-3 z-10 flex size-10 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60 md:right-6"
               >
                 <Icon name="ChevronRight" size={24} />
