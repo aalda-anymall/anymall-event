@@ -14,6 +14,11 @@ export function formatTime(dateStr: string) {
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
+export function formatMonthDay(dateStr: string) {
+  const d = new Date(dateStr);
+  return `${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
 export function formatApplicationPeriod(begin: string, deadline: string) {
   const b = new Date(begin);
   const d = new Date(deadline);

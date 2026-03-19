@@ -3,11 +3,7 @@
 import { useState } from "react";
 import type { SlotState } from "@prisma/client";
 import { Icon } from "@/components/icon";
-import {
-  formatDate,
-  formatTime,
-  formatApplicationPeriod,
-} from "@/lib/format-date";
+import { formatDate, formatMonthDay } from "@/lib/format-date";
 
 type SlotData = {
   id: string;
@@ -39,69 +35,59 @@ function ApplyCard({
 }) {
   return (
     <div
-      className={`flex flex-col gap-2 overflow-hidden rounded-2xl bg-white p-4 outline-brand-green transition-all duration-100 ease-in-out ${
+      className={`flex flex-col gap-2 overflow-hidden rounded-2xl bg-white p-4 outline-brand-green transition-all duration-100 ease-in-out cursor-pointer ${
         selected
           ? "border outline border-brand-green shadow-md"
           : "border border-warm-200"
       }`}
+      onClick={onToggle}
     >
       <div className="flex items-start">
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onToggle}
-              className={`flex size-6 items-center justify-center rounded-full border transition-colors ${
-                selected
-                  ? "border-white bg-brand-green"
-                  : "border-warm-400 bg-white/70"
-              }`}
-            >
-              {selected && (
-                <Icon className="text-white" name="Check" size={16} />
-              )}
-            </button>
-            <span className="inline-flex items-center rounded-full bg-brand-green-bg px-2.5 py-0.5 text-[11px] font-semibold text-brand-green-text">
+            <div className="flex items-center gap-2 cursor-pointer">
+              <button
+                type="button"
+                className={`flex size-6 items-center justify-center rounded-full border transition-colors ${
+                  selected
+                    ? "border-white bg-brand-green"
+                    : "border-warm-400 bg-white/70"
+                }`}
+              >
+                {selected && (
+                  <Icon className="text-white" name="Check" size={16} />
+                )}
+              </button>
+              <span className="text-lg font-bold text-warm-900">
+                {formatDate(slot.startsAt)}
+              </span>
+              {/* <span className="inline-flex items-center rounded-full bg-brand-green-bg px-2.5 py-0.5 text-[11px] font-semibold text-brand-green-text">
               募集中
-            </span>
+            </span> */}
+            </div>
           </div>
           <h3 className="text-xl font-bold text-warm-900">{slot.eventName}</h3>
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <div className="flex items-center gap-2">
-          <div className="min-w-4">
-            <Icon className="text-warm-500" name="Calendar" size={16} />
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">担当者</div>
+          <div className="flex items-center gap-2">
+            <figure
+              className="size-10 rounded-full border border-warm-200 bg-gray-300"
+              data-instructor={slot.instructor}
+            ></figure>
+            <span className="text-warm-900">{slot.instructor}</span>
           </div>
-          <span className="text-[13px] text-warm-900">
-            {formatDate(slot.startsAt)} {formatTime(slot.startsAt)}〜
-            {formatTime(slot.endsAt)}
-          </span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="min-w-4">
-            <Icon className="text-warm-500" name="MapPin" size={16} />
-          </div>
-          <span className="text-[13px] text-warm-900">
-            {slot.venue.name} — {slot.venue.address}
-          </span>
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">会場</div>
+          <span className="text-warm-900">{slot.venue.name}</span>
         </div>
-      </div>
-
-      <div className="flex gap-4 text-[13px]">
-        <div className="text-warm-500">
-          <p>応募期間</p>
-          <p>担当者</p>
-        </div>
-        <div className="text-warm-900">
-          <p>
-            {formatApplicationPeriod(
-              slot.applicationBegin,
-              slot.applicationDeadline,
-            )}
-          </p>
-          <p>{slot.instructor}</p>
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">応募期限</div>
+          <span className="text-warm-900">{formatMonthDay(slot.endsAt)}</span>
         </div>
       </div>
     </div>
@@ -144,7 +130,7 @@ export function ApplyContent({
       </div>
 
       {selectedSlots.length > 0 && (
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4">
+        <div className="w-full mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4">
           <div className="flex items-center gap-2.5">
             <div className="size-2 rounded bg-brand-green" />
             <span className="text-base font-bold text-warm-900">
@@ -165,7 +151,7 @@ export function ApplyContent({
       )}
 
       {unselectedSlots.length > 0 && (
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6">
+        <div className="w-full mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6">
           <div className="flex items-center gap-2.5">
             <Icon className="text-warm-900" name="CirclePlus" size={20} />
             <span className="text-base font-bold text-warm-900">

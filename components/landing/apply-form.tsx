@@ -5,7 +5,7 @@ import Image from "next/image";
 import { prefectureOptions } from "@/lib/labels";
 import { getMemoMaxLength } from "@/lib/validation";
 import { Icon } from "@/components/icon";
-import { formatDate, formatTime } from "@/lib/format-date";
+import { formatMonthDay } from "@/lib/format-date";
 
 type SlotData = {
   id: string;
@@ -161,32 +161,22 @@ function ConfirmRow({ label, value }: { label: string; value: string }) {
 function SlotSummaryCard({ slot }: { slot: SlotData }) {
   return (
     <div className="flex flex-col gap-1 rounded-2xl border border-warm-400 bg-white p-3">
-      <h4 className="text-sm font-bold text-warm-900">{slot.eventName}</h4>
-      <div className="flex items-center gap-1.5">
-        <div className="min-w-4">
-          <Icon className="text-warm-500" name="Calendar" size={14} />
-        </div>
-        <span className="text-xs text-warm-900">
-          {formatDate(slot.startsAt)} {formatTime(slot.startsAt)}〜
-          {formatTime(slot.endsAt)}
-        </span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <div className="min-w-4">
-          <Icon className="text-warm-500" name="MapPin" size={14} />
-        </div>
-        <span className="text-xs text-warm-900">
-          {slot.venue.name} — {slot.venue.address}
-        </span>
-      </div>
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-4 text-[13px]">
-          <div className="text-warm-500">
-            <p>担当者</p>
+      <h4 className="text-ms font-bold text-warm-900">{slot.eventName}</h4>
+
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">担当者</div>
+          <div className="flex items-center gap-2">
+            <figure
+              className="size-10 rounded-full border border-warm-200 bg-gray-300"
+              data-instructor={slot.instructor}
+            ></figure>
+            <span className="text-warm-900">{slot.instructor}</span>
           </div>
-          <div className="text-warm-900">
-            <p>{slot.instructor}</p>
-          </div>
+        </div>
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">会場</div>
+          <span className="text-warm-900">{slot.venue.name}</span>
         </div>
       </div>
     </div>

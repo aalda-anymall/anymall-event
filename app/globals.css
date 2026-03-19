@@ -12,3 +12,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "halt";
 }
+
+*[data-instructor] {
+  background-image: url(/images/instructor/instructor-placeholder.png);
+  @apply bg-cover;
+}
+
+*[data-instructor="今井まなみ"] {
+  background-image: url(/images/instructor/instructor-manami.jpg);
+  @apply bg-cover;
+}
+
+*[data-instructor="中村篤史"] {
+  background-image: url(/images/instructor/instructor-nakamura.jpg);
+  @apply bg-cover;
+}

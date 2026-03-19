@@ -5,11 +5,7 @@ import Image from "next/image";
 import type { SlotState } from "@prisma/client";
 import { Icon } from "@/components/icon";
 import { SectionHeading } from "@/components/landing/section-heading";
-import {
-  formatDate,
-  formatTime,
-  formatApplicationPeriod,
-} from "@/lib/format-date";
+import { formatDate, formatMonthDay } from "@/lib/format-date";
 
 type SlotData = {
   id: string;
@@ -50,15 +46,15 @@ function EventCard({
           ? "border outline border-brand-green shadow-md"
           : "border border-warm-200"
       }`}
+      onClick={onToggle}
     >
       <div className="flex items-start">
         <div className="flex flex-1 flex-col gap-2">
           {isAccepting && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 cursor-pointer">
               <button
                 type="button"
-                onClick={onToggle}
-                className={`flex size-6 items-center justify-center rounded-full border transition-colors ${
+                className={`flex size-6 items-center justify-center rounded-full border transition-colors cursor-pointer ${
                   selected
                     ? "border-white bg-brand-green"
                     : "border-warm-400 bg-white/70"
@@ -68,7 +64,9 @@ function EventCard({
                   <Icon className="text-white" name="Check" size={16} />
                 )}
               </button>
-              <span>{formatDate(slot.startsAt)}</span>
+              <span className="text-lg font-bold text-warm-900">
+                {formatDate(slot.startsAt)}
+              </span>
               {/* <span className="inline-flex items-center rounded-full bg-brand-green-bg px-2.5 py-0.5 text-[11px] font-semibold text-brand-green-text">
                 募集中
               </span> */}
@@ -83,21 +81,32 @@ function EventCard({
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <div className="flex items-center gap-2">
-          <div className="min-w-4">担当者</div>
-          <span className="text-[13px] text-warm-900">{slot.instructor}</span>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">担当者</div>
+          <div className="flex items-center gap-2">
+            <figure
+              className="size-10 rounded-full border border-warm-200 bg-gray-300"
+              data-instructor={slot.instructor}
+            ></figure>
+            <span className="text-warm-900">{slot.instructor}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="min-w-4">会場</div>
-          <span className="text-[13px] text-warm-900">{slot.venue.name}</span>
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">会場</div>
+          <span className="text-warm-900">{slot.venue.name}</span>
+        </div>
+        <div className="flex items-center gap-2 text-[13px]">
+          <div className="text-warm-500 min-w-13">応募期限</div>
+          <span className="text-warm-900">{formatMonthDay(slot.endsAt)}</span>
         </div>
       </div>
 
       {isAccepting && (
         <a
           href={`/event/apply/?slots=${slot.id}`}
-          className="flex h-11 mt-auto items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
+          onClick={(e) => e.stopPropagation()}
+          className="flex h-11 mt-auto items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white transition-colors hover:bg-brand-green-dark cursor-pointer"
         >
           参加を申し込む
         </a>
@@ -153,9 +162,13 @@ export function EventSection({
           <SectionHeading sub="Schedule" label={`開催スケジュール`} />
 
           <p className="text-base leading-7 text-warm-600 md:text-center">
-            以下の​スケジュールで​イベント開催予定です。​参加は​無料で、​応募者多数の​場合は​抽選と​なります。​
+            以下の​スケジュールで​イベント開催予定です。
+            <br />
+            ​参加は​無料で、​応募者多数の​場合は​抽選と​なります。​
             <br />
             各回ごとに​テーマ・内容・​担当者が​異なります。 <br />
+            日付横の丸をチェックすることで最大3件まで​申し込むことができます。​
+            <br />
             ​開催内容は​変更に​なる​可能性も​ありますので​ご了承ください。​
           </p>
 
@@ -240,6 +253,10 @@ export function EventSection({
             ? "h-[106px] translate-y-0 opacity-100"
             : "h-0 min-h-0 pointer-events-none translate-y-full opacity-0"
         }`}
+        style={{
+          boxShadow:
+            "0 0 15px -3px rgb(0 0 0 / 0.1), 0 0 6px -4px rgb(0 0 0 / 0.1)",
+        }}
       >
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 py-4">
           <button
