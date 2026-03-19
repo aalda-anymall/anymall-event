@@ -487,36 +487,12 @@ function FormStep({
         </FormField>
 
         <div className="flex flex-col gap-3 pb-2">
-          <p className="text-[13px] leading-6 text-warm-600">
-            ご入力いただいた個人情報は、本イベントの申込受付、抽選、当落連絡、本人確認、当日の運営、お問い合わせ対応のために利用します。
-            <br />
-            また、当社および本イベントの協賛企業・提携先が、今後のイベント、商品、サービス、キャンペーン等のご案内のために利用し、必要な範囲で共有する場合があります。
-            <br />
-            協賛企業・提携先の範囲その他の取扱いの詳細は、
-            <a
-              className="font-bold text-brand-green underline underline-offset-2"
-              href="https://www.anymall.jp/meal/ja/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              プライバシーポリシー
-            </a>
-            をご確認ください。
-          </p>
-
-          <div className="flex items-start gap-2.5">
-            <input
-              type="checkbox"
-              id="terms-agree"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-0.5 size-4 shrink-0 accent-brand-green"
-            />
-            <label
-              htmlFor="terms-agree"
-              className="text-[13px] leading-5 text-warm-900"
-            >
-              上記内容および
+          <div className="rounded-lg border border-warm-300 bg-warm-50 p-4">
+            <p className="text-[13px] leading-6 text-warm-600">
+              ご入力いただいた個人情報は、本イベントの申込受付、抽選、当落連絡、本人確認、当日の運営、お問い合わせ対応のために利用します。
+              <br />
+              また、当社および本イベントの協賛企業・提携先が、今後のイベント、商品、サービス、キャンペーン等のご案内のために利用し、必要な範囲で共有する場合があります。
+              詳細は、
               <a
                 className="font-bold text-brand-green underline underline-offset-2"
                 href="https://www.anymall.jp/meal/ja/privacy"
@@ -525,9 +501,35 @@ function FormStep({
               >
                 プライバシーポリシー
               </a>
-              に同意
-            </label>
+              をご確認ください。
+            </p>
           </div>
+
+          <label
+            htmlFor="terms-agree"
+            className="flex cursor-pointer items-start gap-3 rounded-lg border border-warm-300 bg-white p-4 transition-colors hover:bg-warm-50 active:bg-warm-100"
+          >
+            <input
+              type="checkbox"
+              id="terms-agree"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 size-5 shrink-0 cursor-pointer accent-brand-green"
+            />
+            <span className="text-[15px] leading-6 text-warm-900">
+              上記内容および
+              <a
+                className="font-bold text-brand-green underline underline-offset-2"
+                href="https://www.anymall.jp/meal/ja/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                プライバシーポリシー
+              </a>
+              に同意
+            </span>
+          </label>
         </div>
       </div>
       <div className="flex items-center justify-center gap-4 bg-white py-4 mt-auto">
