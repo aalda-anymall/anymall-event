@@ -139,7 +139,7 @@ export function ApplyContent({
           イベント参加申し込み
         </h1>
         <p className="mt-2 text-sm text-warm-500">
-          気に​なる​イベントに​最大3回まで​申し込むことができます。​
+          気に​なる​イベントを最大3件まで​申し込むことができます。​
         </p>
       </div>
 
@@ -185,7 +185,13 @@ export function ApplyContent({
         </div>
       )}
 
-      <div className="sticky bottom-0 bg-white py-4">
+      <div
+        className="sticky bottom-0 bg-white py-4"
+        style={{
+          boxShadow:
+            "0 0 15px -3px rgb(0 0 0 / 0.1), 0 0 6px -4px rgb(0 0 0 / 0.1)",
+        }}
+      >
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 md:px-8">
           <div className="flex items-center gap-2.5">
             <button
