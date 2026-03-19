@@ -215,7 +215,7 @@ function FormStep({
             />
           </FormField>
 
-          <FormField label="都道府県">
+          <FormField label="居住地">
             <div className="relative">
               <select
                 className="w-full appearance-none rounded-lg border border-warm-400 bg-white py-2.5 pl-3.5 pr-9 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1"
@@ -303,7 +303,7 @@ function ConfirmStep({
           <ConfirmRow label="氏名（フリガナ）" value={formData.furigana} />
           <ConfirmRow label="メールアドレス" value={formData.email} />
           <ConfirmRow label="生年月日" value={formData.birthday} />
-          <ConfirmRow label="都道府県" value={formData.prefecture} />
+          <ConfirmRow label="居住地" value={formData.prefecture} />
           <ConfirmRow label="メモ" value={formData.memo} />
         </div>
 

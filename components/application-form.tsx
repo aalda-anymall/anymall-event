@@ -79,7 +79,11 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
       return;
     }
 
-    if (!prefectureOptions.includes(normalizedPrefecture as (typeof prefectureOptions)[number])) {
+    if (
+      !prefectureOptions.includes(
+        normalizedPrefecture as (typeof prefectureOptions)[number],
+      )
+    ) {
       setError("Select a valid prefecture.");
       return;
     }
@@ -112,13 +116,14 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
           gender: normalizedGender,
           prefecture: normalizedPrefecture,
           memo: normalizedMemo,
-          selectedSlotIds: dedupedSelectedSlotIds
-        })
+          selectedSlotIds: dedupedSelectedSlotIds,
+        }),
       });
 
-      const data = (await response.json().catch(() => null)) as
-        | { error?: string; warning?: string }
-        | null;
+      const data = (await response.json().catch(() => null)) as {
+        error?: string;
+        warning?: string;
+      } | null;
 
       if (response.ok) {
         const successMessage = data?.warning
@@ -146,7 +151,10 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
   return (
     <form className="mt-4 space-y-4" onSubmit={onSubmit}>
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-800" htmlFor="name">
+        <label
+          className="mb-1 block text-sm font-medium text-slate-800"
+          htmlFor="name"
+        >
           Name (Katakana)
         </label>
         <input
@@ -161,7 +169,10 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-800" htmlFor="email">
+        <label
+          className="mb-1 block text-sm font-medium text-slate-800"
+          htmlFor="email"
+        >
           Email
         </label>
         <input
@@ -176,7 +187,10 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-800" htmlFor="birthday">
+        <label
+          className="mb-1 block text-sm font-medium text-slate-800"
+          htmlFor="birthday"
+        >
           Birthday
         </label>
         <input
@@ -226,8 +240,11 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-800" htmlFor="prefecture">
-          都道府県
+        <label
+          className="mb-1 block text-sm font-medium text-slate-800"
+          htmlFor="prefecture"
+        >
+          居住地
         </label>
         <select
           className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-slate-500"
@@ -246,7 +263,10 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-800" htmlFor="memo">
+        <label
+          className="mb-1 block text-sm font-medium text-slate-800"
+          htmlFor="memo"
+        >
           メモ
         </label>
         <textarea
@@ -257,15 +277,22 @@ export function ApplicationForm({ slotOptions }: ApplicationFormProps) {
           placeholder="ご要望があればご記入ください"
           value={memo}
         />
-        <p className="mt-1 text-xs text-slate-500">{memo.length}/{memoMaxLength}</p>
+        <p className="mt-1 text-xs text-slate-500">
+          {memo.length}/{memoMaxLength}
+        </p>
       </div>
 
       <div>
-        <p className="mb-1 block text-sm font-medium text-slate-800">Available Slots</p>
+        <p className="mb-1 block text-sm font-medium text-slate-800">
+          Available Slots
+        </p>
         {hasAvailableSlots ? (
           <div className="max-h-56 space-y-2 overflow-y-auto rounded-md border border-slate-300 p-3">
             {slotOptions.map((slot) => (
-              <label className="flex items-start gap-2 text-sm text-slate-700" key={slot.id}>
+              <label
+                className="flex items-start gap-2 text-sm text-slate-700"
+                key={slot.id}
+              >
                 <input
                   checked={selectedSlotSet.has(slot.id)}
                   disabled={isSubmitting}

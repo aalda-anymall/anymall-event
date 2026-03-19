@@ -1,8 +1,16 @@
 import { Gender, Prefecture } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_SESSION_COOKIE, isValidAdminSessionToken } from "@/lib/admin-auth";
+import {
+  ADMIN_SESSION_COOKIE,
+  isValidAdminSessionToken,
+} from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
-import { calculateAge, isValidEmail, isValidPrefecture, parseBirthday } from "@/lib/validation";
+import {
+  calculateAge,
+  isValidEmail,
+  isValidPrefecture,
+  parseBirthday,
+} from "@/lib/validation";
 
 type SubmissionUpdateInput = {
   name?: unknown;
@@ -24,7 +32,7 @@ function isGender(value: string): value is Gender {
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: Promise<{ submissionId: string }> }
+  context: { params: Promise<{ submissionId: string }> },
 ) {
   const sessionToken = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
   const isAdminSessionValid = await isValidAdminSessionToken(sessionToken);
@@ -36,7 +44,10 @@ export async function PATCH(
   try {
     body = (await request.json()) as SubmissionUpdateInput;
   } catch {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request body." },
+      { status: 400 },
+    );
   }
 
   const name = normalizeText(body.name);
@@ -47,11 +58,17 @@ export async function PATCH(
   const birthday = parseBirthday(birthdayInput);
 
   if (!name || !email || !gender || !birthdayInput || !prefecture) {
-    return NextResponse.json({ error: "必須項目を入力してください。" }, { status: 400 });
+    return NextResponse.json(
+      { error: "必須項目を入力してください。" },
+      { status: 400 },
+    );
   }
 
   if (!isValidEmail(email)) {
-    return NextResponse.json({ error: "有効なメールアドレスを入力してください。" }, { status: 400 });
+    return NextResponse.json(
+      { error: "有効なメールアドレスを入力してください。" },
+      { status: 400 },
+    );
   }
 
   if (!isGender(gender)) {
@@ -64,38 +81,44 @@ export async function PATCH(
 
   const age = calculateAge(birthday);
   if (age < 18 || age > 100) {
-    return NextResponse.json({ error: "年齢は18から100までにしてください。" }, { status: 400 });
+    return NextResponse.json(
+      { error: "年齢は18から100までにしてください。" },
+      { status: 400 },
+    );
   }
 
   if (!isValidPrefecture(prefecture)) {
-    return NextResponse.json({ error: "都道府県が不正です。" }, { status: 400 });
+    return NextResponse.json({ error: "居住地が不正です。" }, { status: 400 });
   }
 
   const { submissionId } = await context.params;
 
   const existingSubmission = await prisma.submission.findUnique({
     where: {
-      id: submissionId
+      id: submissionId,
     },
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
 
   if (!existingSubmission) {
-    return NextResponse.json({ error: "申込が見つかりません。" }, { status: 404 });
+    return NextResponse.json(
+      { error: "申込が見つかりません。" },
+      { status: 404 },
+    );
   }
 
   const submission = await prisma.submission.update({
     where: {
-      id: submissionId
+      id: submissionId,
     },
     data: {
       name,
       email,
       gender,
       birthday,
-      prefecture: prefecture as Prefecture
+      prefecture: prefecture as Prefecture,
     },
     select: {
       id: true,
@@ -104,8 +127,8 @@ export async function PATCH(
       gender: true,
       birthday: true,
       prefecture: true,
-      createdAt: true
-    }
+      createdAt: true,
+    },
   });
 
   return NextResponse.json({
@@ -117,7 +140,7 @@ export async function PATCH(
       age: calculateAge(submission.birthday),
       prefecture: submission.prefecture,
       birthday: submission.birthday.toISOString(),
-      createdAt: submission.createdAt.toISOString()
-    }
+      createdAt: submission.createdAt.toISOString(),
+    },
   });
 }

@@ -130,7 +130,7 @@ function validateSubmissionForm(values: SubmissionFormState): string | null {
   }
 
   if (!isValidPrefecture(values.prefecture)) {
-    return "都道府県が不正です。";
+    return "居住地が不正です。";
   }
 
   return null;
@@ -280,7 +280,7 @@ export function SubmissionsTable({
               <th className="px-2 py-2">メイル</th>
               <th className="px-2 py-2">性別</th>
               <th className="px-2 py-2">年齢</th>
-              <th className="px-2 py-2">都道府県</th>
+              <th className="px-2 py-2">居住地</th>
               <th className="px-2 py-2">申込日時</th>
             </tr>
           </thead>
@@ -441,7 +441,7 @@ export function SubmissionsTable({
                     className="mb-1 block text-xs font-medium text-slate-600"
                     htmlFor="submission-prefecture"
                   >
-                    都道府県
+                    居住地
                   </label>
                   <select
                     className={selectInputClassName}
@@ -454,7 +454,7 @@ export function SubmissionsTable({
                     }
                     value={formValues.prefecture}
                   >
-                    <option value="">都道府県を選択</option>
+                    <option value="">居住地を選択</option>
                     {prefectureOptions.map((prefecture) => (
                       <option key={prefecture} value={prefecture}>
                         {prefecture}

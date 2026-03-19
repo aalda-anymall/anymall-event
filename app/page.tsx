@@ -92,7 +92,7 @@ export default async function HomePage() {
 
         <a
           href="#events"
-          className="absolute left-1/2 bottom-[32px] -translate-x-1/2 rounded-full bg-brand-green px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-brand-green-dark md:bottom-[30px]"
+          className="absolute left-1/2 bottom-[32px] -translate-x-1/2 rounded-full bg-brand-green px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-brand-green-dark md:bottom-[30px] fadeIn"
         >
           イベントを見る ↓
         </a>
