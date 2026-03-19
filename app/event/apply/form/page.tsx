@@ -37,10 +37,12 @@ export default async function ApplyFormPage({
   }));
 
   return (
-    <div className="min-h-screen bg-warm-100 font-sans">
+    <main className="flex flex-col min-h-screen bg-warm-100 font-sans">
       <Header />
-      <ApplyForm slots={serializedSlots} />
-      <Footer />
-    </div>
+      <div className="flex flex-col flex-1">
+        <ApplyForm slots={serializedSlots} />
+        <Footer />
+      </div>
+    </main>
   );
 }

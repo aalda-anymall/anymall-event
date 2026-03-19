@@ -134,17 +134,17 @@ export function ApplyContent({
 
   return (
     <>
-      <div className="mx-auto max-w-6xl px-4 pb-2 pt-6 md:px-8">
+      <div className="mx-auto max-w-6xl px-4 pb-2 pt-6 text-center md:py-8">
         <h1 className="text-[28px] font-bold text-warm-900">
           イベント参加申し込み
         </h1>
         <p className="mt-2 text-sm text-warm-500">
-          気に​なる​イベントを​最大3回まで​申し込むことができます。​
+          気に​なる​イベントに​最大3回まで​申し込むことができます。​
         </p>
       </div>
 
       {selectedSlots.length > 0 && (
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4">
           <div className="flex items-center gap-2.5">
             <div className="size-2 rounded bg-brand-green" />
             <span className="text-base font-bold text-warm-900">
@@ -165,7 +165,7 @@ export function ApplyContent({
       )}
 
       {unselectedSlots.length > 0 && (
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6">
           <div className="flex items-center gap-2.5">
             <Icon className="text-warm-900" name="CirclePlus" size={20} />
             <span className="text-base font-bold text-warm-900">

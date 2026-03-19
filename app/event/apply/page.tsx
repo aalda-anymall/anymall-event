@@ -52,7 +52,9 @@ export default async function ApplyPage({
   searchParams: Promise<{ slots?: string }>;
 }) {
   const { slots: slotsParam } = await searchParams;
-  const preSelectedIds = slotsParam ? slotsParam.split(",").filter(Boolean) : [];
+  const preSelectedIds = slotsParam
+    ? slotsParam.split(",").filter(Boolean)
+    : [];
 
   const acceptingSlots = await prisma.slot.findMany({
     where: { state: SlotState.ACCEPTING_APPLICATIONS },
@@ -69,13 +71,15 @@ export default async function ApplyPage({
     .map(serializeSlot);
 
   return (
-    <div className="min-h-screen bg-warm-100 font-sans">
+    <main className="flex flex-col min-h-screen bg-warm-100 font-sans">
       <Header />
-      <ApplyContent
-        initialSelectedSlots={selectedSlots}
-        otherSlots={otherSlots}
-      />
-      <Footer />
-    </div>
+      <div className="flex flex-col flex-1">
+        <ApplyContent
+          initialSelectedSlots={selectedSlots}
+          otherSlots={otherSlots}
+        />
+        <Footer />
+      </div>
+    </main>
   );
 }

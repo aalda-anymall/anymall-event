@@ -291,7 +291,7 @@ function FormStep({
   }
 
   return (
-    <div className="flex flex-col gap-3.5 pt-6">
+    <div className="flex flex-col flex-1 gap-3.5 pt-6">
       <div className="mx-auto flex w-full max-w-lg flex-col gap-3.5 px-4 md:px-0">
         <div className="grid gap-3.5 md:grid-cols-2">
           <FormField label="氏名" required>
@@ -480,7 +480,7 @@ function FormStep({
 
         {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
-      <div className="flex items-center justify-center gap-4 bg-white py-4">
+      <div className="flex items-center justify-center gap-4 bg-white py-4 mt-auto">
         <button
           type="button"
           onClick={onBack}
@@ -519,7 +519,7 @@ function ConfirmStep({
   onSubmit: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-3.5 pt-6">
+    <div className="flex flex-col flex-1 gap-3.5 pt-6">
       <div className="mx-auto flex w-full max-w-lg flex-col gap-3.5 px-4 md:px-0">
         <div>
           <h2 className="text-lg font-bold text-warm-900">入力内容の確認</h2>
@@ -549,7 +549,7 @@ function ConfirmStep({
         </div>
 
         <div className="flex flex-col gap-3">
-          <span className="text-[11px] text-warm-500">応募イベント</span>
+          <span className="text-[11px] text-warm-500">申し込みイベント</span>
           {slots.map((slot) => (
             <SlotSummaryCard key={slot.id} slot={slot} />
           ))}
@@ -557,7 +557,7 @@ function ConfirmStep({
 
         {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
-      <div className="flex items-center justify-center gap-4 bg-white py-4">
+      <div className="flex items-center justify-center gap-4 bg-white py-4 mt-auto">
         <button
           type="button"
           onClick={onBack}
@@ -581,9 +581,8 @@ function ConfirmStep({
 
 function CompleteStep() {
   return (
-    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-4 pb-16 md:px-0">
+    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-4 py-16 md:px-0">
       <div className="flex w-[90%] items-center justify-center">
-        {/* <Icon className="text-white" name="Check" size={32} /> */}
         <Image
           className="rounded-[36px]"
           src="/images/fig-family.jpg"
@@ -595,27 +594,29 @@ function CompleteStep() {
 
       <div className="flex flex-col items-center gap-3 text-center">
         <h2 className="text-2xl font-bold text-warm-900">
-          応募ありがとうございます
+          お申し込み​ありがとう​ございます
         </h2>
         <p className="text-sm leading-6 text-warm-500">
-          メールを送信しました。メールをご確認ください。
+          お申し込み控え​メールを​送信しましたので​ご確認ください。
           <br />
-          抽選結果はメールでお知らせします。
+          ​万一メールが​届いていない​場合は、​お問い​合わせください。
+          <br />
+          ​抽選結果は​後日メールにてお知らせします。​
         </p>
       </div>
 
-      <div className="flex w-full flex-col items-center gap-3 pt-4 md:flex-row md:justify-center">
+      <div className="flex w-full flex-col items-center gap-3 pt-4">
         <a
-          href="/#events"
-          className="flex h-11 w-full items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white transition-colors hover:bg-brand-green-dark md:w-auto md:px-8"
+          href="/"
+          className="flex h-11 w-full items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
         >
-          他のイベントも見る
+          戻る
         </a>
         <a
           href="/"
-          className="flex h-11 w-full items-center justify-center rounded-full border border-warm-200 bg-white text-sm font-bold text-warm-500 transition-colors hover:bg-warm-50 md:w-auto md:px-8"
+          className="flex h-11 w-full items-center justify-center rounded-full border border-warm-200 bg-white text-sm font-bold text-warm-500 transition-colors hover:bg-warm-50"
         >
-          トップページに戻る
+          お問い合わせ
         </a>
       </div>
     </div>
@@ -710,14 +711,16 @@ export function ApplyForm({ slots }: { slots: SlotData[] }) {
 
   return (
     <>
-      <div className="mx-auto max-w-6xl px-4 pb-2 pt-6 md:px-8">
-        <h1 className="text-[28px] font-bold text-warm-900">
-          イベント参加申し込み
-        </h1>
-        <p className="mt-2 text-sm text-warm-500">
-          以下の​項目に​ついて​それぞれご記入ください。​
-        </p>
-      </div>
+      {step != "complete" && (
+        <div className="mx-auto max-w-6xl px-4 pb-2 pt-6 text-center md:py-8">
+          <h1 className="text-[28px] font-bold text-warm-900">
+            イベント参加申し込み
+          </h1>
+          <p className="mt-2 text-sm text-warm-500">
+            以下の​項目に​ついて​それぞれご記入ください。​
+          </p>
+        </div>
+      )}
       {step === "complete" && <CompleteStep />}
       {step === "confirm" && (
         <ConfirmStep

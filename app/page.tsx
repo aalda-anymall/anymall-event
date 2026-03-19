@@ -46,280 +46,286 @@ export default async function HomePage() {
   const venues = await prisma.venue.findMany();
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <main className="flex flex-col min-h-screen bg-white font-sans">
       <Header />
 
-      {/* Hero */}
-      <section className="relative h-[665px] overflow-hidden md:h-[720px]">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/hero.png"
-            alt="愛犬と過ごす特別なひととき"
-            fill
-            className="object-cover pb-40 md:pb-0"
-            priority
-          />
-        </div>
-        <div
-          className="md:hidden absolute left-0 bottom-0 h-[390px] w-full"
-          style={{
-            background: "linear-gradient(180deg, transparent 0%, #eef2e6 30%)",
-          }}
-        />
-
-        <div className="absolute left-0 bottom-0 w-full flex flex-col items-center pb-32 md:pb-0">
-          <div className="flex flex-col md:block items-center gap-4 px-4 md:w-7xl md:pb-52 md:px-0">
-            <h1 className="text-center md:text-right font-serif text-[32px] leading-[48px] text-brand-green-accent md:text-[40px] md:leading-[56px] md:leading-[150%]">
-              <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:text-[64px]">
-                愛犬と過ごす、
-              </span>
-              <br />
-              <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:text-[64px] md:ml-10">
-                特別なひととき。
-              </span>
-            </h1>
-            <p className="text-center md:text-right text-[15px] leading-7 text-warm-700 md:text-base md:leading-8 md:mt-8">
-              <span className="md:inline-block md:bg-white md:pt-0.5 md:pb-1 md:px-2">
-                大切な愛犬との暮らしがもっと豊かになる、体験型イベント。
-              </span>
-              <br />
-              <span className="md:inline-block md:bg-white md:pt-0.5 md:pb-1 md:px-2">
-                食事・健康・ライフスタイルを、専門家と一緒に楽しく学びませんか。
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <a
-          href="#events"
-          className="absolute left-1/2 bottom-[32px] -translate-x-1/2 rounded-full bg-brand-green px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-brand-green-dark md:bottom-[30px] fadeIn"
-        >
-          イベントを見る ↓
-        </a>
-      </section>
-
-      {/* Theme */}
-      <section className="px-4 py-8 md:px-8 md:py-16">
-        <div className="mx-auto flex max-w-6xl flex-col gap-8">
-          <SectionHeading
-            sub="Theme"
-            label="ペットとの暮らしを、もっと楽しむために。"
-          />
-
-          <div className="mx-auto max-w-2xl text-base leading-7 text-warm-600 md:text-center">
+      <div className="flex flex-col flex-1">
+        {/* Hero */}
+        <section className="relative h-[665px] overflow-hidden md:h-[720px]">
+          <div className="absolute inset-0">
             <Image
-              src="/images/theme-life.jpg"
-              alt="ペットとの暮らしを、もっと楽しむために。"
-              width={512}
-              height={512}
+              src="/images/hero.png"
+              alt="愛犬と過ごす特別なひととき"
+              fill
+              className="object-cover pb-40 md:pb-0"
+              priority
             />
           </div>
-          <div className="mx-auto max-w-2xl text-base leading-7 text-warm-600 md:text-center">
-            <p>
-              獣医師監修のもと、ペットの食事・健康・生活に関するテーマを取り上げた少人数制イベントを開催します。
-            </p>
-            <p>
-              ランチを楽しみながら、栄養学、手作りフード、犬種別の健康管理、長寿の秘訣など、
-              愛犬との暮らしに役立つ知識やヒントを学べる特別な時間です。
-            </p>
+          <div
+            className="md:hidden absolute left-0 bottom-0 h-[390px] w-full"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 0%, #eef2e6 30%)",
+            }}
+          />
+
+          <div className="absolute left-0 bottom-0 w-full flex flex-col items-center pb-32 md:pb-0">
+            <div className="flex flex-col md:block items-center gap-4 px-4 md:w-7xl md:pb-52 md:px-0">
+              <h1 className="text-center md:text-right font-serif text-[32px] leading-[48px] text-brand-green-accent md:text-[40px] md:leading-[56px] md:leading-[150%]">
+                <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:text-[64px]">
+                  愛犬と過ごす、
+                </span>
+                <br />
+                <span className="inline-block bg-white pt-0.5 pb-1 px-2 md:px-4 md:py-3 md:text-[64px] md:ml-10">
+                  特別なひととき。
+                </span>
+              </h1>
+              <p className="text-center md:text-right text-[15px] leading-7 text-warm-700 md:text-base md:leading-8 md:mt-8">
+                <span className="md:inline-block md:bg-white md:pt-0.5 md:pb-1 md:px-2">
+                  大切な愛犬との暮らしがもっと豊かになる、体験型イベント。
+                </span>
+                <br />
+                <span className="md:inline-block md:bg-white md:pt-0.5 md:pb-1 md:px-2">
+                  食事・健康・ライフスタイルを、専門家と一緒に楽しく学びませんか。
+                </span>
+              </p>
+            </div>
           </div>
 
-          <div className="mx-auto grid max-w-2xl gap-4 md:grid-cols-2">
-            {[
-              {
-                icon: "Bone" as const,
-                text: "愛犬にあう食事の考え方/付き合い方",
-              },
-              {
-                icon: "Utensils" as const,
-                text: "はじめての手作りごはんの作り方",
-              },
-              {
-                icon: "Activity" as const,
-                text: "犬種ごとに起きやすい健康トラブル",
-              },
-              {
-                icon: "Heart" as const,
-                text: "愛犬の長生きのためにできること",
-              },
-            ].map((item) => (
-              <div key={item.text} className="flex items-center gap-3">
-                <div className="relative flex size-11 shrink-0 items-center justify-center rounded-lg bg-warm-100">
-                  <Icon
-                    className="text-warm-accent"
-                    name={item.icon}
-                    size="24"
-                  />
-                </div>
-                <p className="font-serif text-[17px] font-semibold text-warm-800">
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          <a
+            href="#events"
+            className="absolute left-1/2 bottom-[32px] -translate-x-1/2 rounded-full bg-brand-green px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-brand-green-dark md:bottom-[30px] fadeIn"
+          >
+            イベントを見る ↓
+          </a>
+        </section>
 
-      {/* Venue */}
-      <section className="bg-warm-50 px-4 py-8 md:px-8 md:py-16">
-        <div className="mx-auto flex max-w-6xl flex-col gap-8">
-          <SectionHeading sub="Venue" label="会場" />
+        {/* Theme */}
+        <section className="px-4 py-8 md:px-8 md:py-16">
+          <div className="mx-auto flex max-w-6xl flex-col gap-8">
+            <SectionHeading
+              sub="Theme"
+              label="ペットとの暮らしを、もっと楽しむために。"
+            />
 
-          <div className="relative grid gap-6 md:grid-cols-2">
-            {[
-              {
-                name: "inumo 芝公園 by ヴィラフォンテーヌ",
-                url: "https://www.hvf.jp/inumo-shibakoen/",
-                description:
-                  "inumo 芝公園 by ヴィラフォンテーヌは、​都心で​愛犬と​一緒に​快適な​滞在を​楽しめる​ドッグファーストな​ホテルです。​館内は​どこでも​愛犬と​過ごせる​設計で、​屋内ドッグランや​グルーミング、​お預かりサービス、​レストランなども​充実。​愛犬との​時間を​心地よく​彩る、​上質な​宿泊体験を​提供します",
-                image: "/images/venue-inumo.png",
-              },
-              {
-                name: "Dyplus 大阪北",
-                url: "https://osakakita.dyplus-pet.com/",
-                description:
-                  "Dyplus 大阪北は、​ペットと​飼い主の​健康的な​暮らしを​支える​複合施設です。​未病・予防を​目的とした​メディカルチェックに​加え、​ホテルや​預かり保育、​しつけ相談などを​通じて、​ヘルスケアと​ライフスタイルの​両面から​サポート。​専門スタッフが​連携し、​“ペットとの​暮らしに​プラス”を​届けます。​",
-                image: "/images/venue-dyplus.png",
-              },
-            ].map((venue) => (
-              <div
-                key={venue.name}
-                className="relative z-20 overflow-hidden rounded-2xl border border-warm-200 bg-white"
-              >
-                <div className="relative h-[242px] bg-warm-300">
-                  <Image
-                    src={venue.image}
-                    alt={venue.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col gap-4 px-4 pb-4 pt-2">
-                  <div className="flex flex-col gap-2.5">
-                    <h3 className="font-serif text-[22px] font-bold text-warm-900">
-                      <a
-                        href={venue.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {venue.name}
-                      </a>
-                    </h3>
+            <div className="mx-auto max-w-2xl text-base leading-7 text-warm-600 md:text-center">
+              <Image
+                src="/images/theme-life.jpg"
+                alt="ペットとの暮らしを、もっと楽しむために。"
+                width={512}
+                height={512}
+              />
+            </div>
+            <div className="mx-auto max-w-2xl text-base leading-7 text-warm-600 md:text-center">
+              <p>
+                獣医師監修のもと、ペットの食事・健康・生活に関するテーマを取り上げた少人数制イベントを開催します。
+              </p>
+              <p>
+                ランチを楽しみながら、栄養学、手作りフード、犬種別の健康管理、長寿の秘訣など、
+                愛犬との暮らしに役立つ知識やヒントを学べる特別な時間です。
+              </p>
+            </div>
+
+            <div className="mx-auto grid max-w-2xl gap-4 md:grid-cols-2">
+              {[
+                {
+                  icon: "Bone" as const,
+                  text: "愛犬にあう食事の考え方/付き合い方",
+                },
+                {
+                  icon: "Utensils" as const,
+                  text: "はじめての手作りごはんの作り方",
+                },
+                {
+                  icon: "Activity" as const,
+                  text: "犬種ごとに起きやすい健康トラブル",
+                },
+                {
+                  icon: "Heart" as const,
+                  text: "愛犬の長生きのためにできること",
+                },
+              ].map((item) => (
+                <div key={item.text} className="flex items-center gap-3">
+                  <div className="relative flex size-11 shrink-0 items-center justify-center rounded-lg bg-warm-100">
+                    <Icon
+                      className="text-warm-accent"
+                      name={item.icon}
+                      size="24"
+                    />
                   </div>
-                  <p className="text-base leading-6 text-warm-500">
-                    {venue.description}
+                  <p className="font-serif text-[17px] font-semibold text-warm-800">
+                    {item.text}
                   </p>
-                  <div className="relative h-[96px] w-full overflow-hidden rounded-lg">
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Venue */}
+        <section className="bg-warm-50 px-4 py-8 md:px-8 md:py-16">
+          <div className="mx-auto flex max-w-6xl flex-col gap-8">
+            <SectionHeading sub="Venue" label="会場" />
+
+            <div className="relative grid gap-6 md:grid-cols-2">
+              {[
+                {
+                  name: "inumo 芝公園 by ヴィラフォンテーヌ",
+                  url: "https://www.hvf.jp/inumo-shibakoen/",
+                  description:
+                    "inumo 芝公園 by ヴィラフォンテーヌは、​都心で​愛犬と​一緒に​快適な​滞在を​楽しめる​ドッグファーストな​ホテルです。​館内は​どこでも​愛犬と​過ごせる​設計で、​屋内ドッグランや​グルーミング、​お預かりサービス、​レストランなども​充実。​愛犬との​時間を​心地よく​彩る、​上質な​宿泊体験を​提供します",
+                  image: "/images/venue-inumo.png",
+                },
+                {
+                  name: "Dyplus 大阪北",
+                  url: "https://osakakita.dyplus-pet.com/",
+                  description:
+                    "Dyplus 大阪北は、​ペットと​飼い主の​健康的な​暮らしを​支える​複合施設です。​未病・予防を​目的とした​メディカルチェックに​加え、​ホテルや​預かり保育、​しつけ相談などを​通じて、​ヘルスケアと​ライフスタイルの​両面から​サポート。​専門スタッフが​連携し、​“ペットとの​暮らしに​プラス”を​届けます。​",
+                  image: "/images/venue-dyplus.png",
+                },
+              ].map((venue) => (
+                <div
+                  key={venue.name}
+                  className="relative z-20 overflow-hidden rounded-2xl border border-warm-200 bg-white"
+                >
+                  <div className="relative h-[242px] bg-warm-300">
                     <Image
-                      src="/images/venue-map.png"
-                      alt="Map"
+                      src={venue.image}
+                      alt={venue.name}
                       fill
                       className="object-cover"
                     />
                   </div>
-                </div>
-              </div>
-            ))}
-            <Image
-              className="absolute z-10 -top-24 -left-1 md:-left-10 -rotate-30"
-              src="/images/fig-dog.jpg"
-              alt=""
-              width={168}
-              height={214}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Events */}
-      <EventSection acceptingSlots={acceptingSlots} comingSlots={comingSlots} />
-
-      {/* Speaker */}
-      <section className="bg-brand-green-bg px-4 py-8 md:px-8 md:py-16">
-        <div className="mx-auto flex max-w-6xl flex-col gap-8">
-          <SectionHeading sub="Instructor" label="担当講師" />
-
-          <div className="grid gap-12 md:grid-cols-2 md:gap-8">
-            {[
-              {
-                name: "中村 篤史",
-                title: "獣医師 / A'aldaの動物病院グループ総院長",
-                bio: "A'aldaの動物病院グループ総院長として国内最大級の動物病院グループを統括。獣医療の現場と経営の両面から、ペットと飼い主の未来を見据えたビジョンを発信しています。",
-                image: "/images/speaker-nakamura.png",
-              },
-              {
-                name: "まなみ獣医師",
-                title: "獣医師 / 愛犬ごはん研究家",
-                bio: "「獣医師まなみの愛犬ごはん」主宰。\n栄養学と臨床経験に基づく科学的根拠のある手作りごはんを提唱し、SNS総フォロワー数は数万人規模。\n飼い主目線の実践的アドバイスで圧倒的な支持を集めています。",
-                image: "/images/speaker-manami.png",
-              },
-            ].map((speaker) => (
-              <div
-                key={speaker.name}
-                className="flex flex-col items-center rounded-2xl bg-white p-8"
-              >
-                <div className="flex flex-col items-center gap-4">
-                  <div className="relative size-[200px] md:size-[160px]">
-                    <Image
-                      src={speaker.image}
-                      alt={speaker.name}
-                      fill
-                      className="rounded-full object-cover"
-                    />
-                    <div className="absolute inset-0 rounded-full ring-2 ring-brand-green-light ring-offset-2" />
+                  <div className="flex flex-col gap-4 px-4 pb-4 pt-2">
+                    <div className="flex flex-col gap-2.5">
+                      <h3 className="font-serif text-[22px] font-bold text-warm-900">
+                        <a
+                          href={venue.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {venue.name}
+                        </a>
+                      </h3>
+                    </div>
+                    <p className="text-base leading-6 text-warm-500">
+                      {venue.description}
+                    </p>
+                    <div className="relative h-[96px] w-full overflow-hidden rounded-lg">
+                      <Image
+                        src="/images/venue-map.png"
+                        alt="Map"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center gap-2 text-center font-bold">
-                    <p className="text-2xl text-warm-900">{speaker.name}</p>
-                    <p className="text-lg text-brand-green-dark">
-                      {speaker.title}
+                </div>
+              ))}
+              <Image
+                className="absolute z-10 -top-24 -left-1 md:-left-10 -rotate-30"
+                src="/images/fig-dog.jpg"
+                alt=""
+                width={168}
+                height={214}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Events */}
+        <EventSection
+          acceptingSlots={acceptingSlots}
+          comingSlots={comingSlots}
+        />
+
+        {/* Speaker */}
+        <section className="bg-brand-green-bg px-4 py-8 md:px-8 md:py-16">
+          <div className="mx-auto flex max-w-6xl flex-col gap-8">
+            <SectionHeading sub="Instructor" label="担当講師" />
+
+            <div className="grid gap-12 md:grid-cols-2 md:gap-8">
+              {[
+                {
+                  name: "中村 篤史",
+                  title: "獣医師 / A'aldaの動物病院グループ総院長",
+                  bio: "A'aldaの動物病院グループ総院長として国内最大級の動物病院グループを統括。獣医療の現場と経営の両面から、ペットと飼い主の未来を見据えたビジョンを発信しています。",
+                  image: "/images/speaker-nakamura.png",
+                },
+                {
+                  name: "まなみ獣医師",
+                  title: "獣医師 / 愛犬ごはん研究家",
+                  bio: "「獣医師まなみの愛犬ごはん」主宰。\n栄養学と臨床経験に基づく科学的根拠のある手作りごはんを提唱し、SNS総フォロワー数は数万人規模。\n飼い主目線の実践的アドバイスで圧倒的な支持を集めています。",
+                  image: "/images/speaker-manami.png",
+                },
+              ].map((speaker) => (
+                <div
+                  key={speaker.name}
+                  className="flex flex-col items-center rounded-2xl bg-white p-8"
+                >
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="relative size-[200px] md:size-[160px]">
+                      <Image
+                        src={speaker.image}
+                        alt={speaker.name}
+                        fill
+                        className="rounded-full object-cover"
+                      />
+                      <div className="absolute inset-0 rounded-full ring-2 ring-brand-green-light ring-offset-2" />
+                    </div>
+                    <div className="flex flex-col items-center gap-2 text-center font-bold">
+                      <p className="text-2xl text-warm-900">{speaker.name}</p>
+                      <p className="text-lg text-brand-green-dark">
+                        {speaker.title}
+                      </p>
+                    </div>
+                    <p className="whitespace-pre-line text-base leading-6 text-warm-900">
+                      {speaker.bio}
                     </p>
                   </div>
-                  <p className="whitespace-pre-line text-base leading-6 text-warm-900">
-                    {speaker.bio}
-                  </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Partner */}
-      <section className="relative bg-white pt-16 pb-48 overflow-hidden">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-10">
-          <SectionHeading sub="Partner" label="パートナー" />
-          <div className="relative z-30 flex flex-col items-center gap-16 md:flex-row md:justify-center md:gap-16">
+        {/* Partner */}
+        <section className="relative bg-white pt-16 pb-48 overflow-hidden">
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-10">
+            <SectionHeading sub="Partner" label="パートナー" />
+            <div className="relative z-30 flex flex-col items-center gap-16 md:flex-row md:justify-center md:gap-16">
+              <Image
+                src="/images/partner-diners.png"
+                alt="Diners Club International"
+                width={132}
+                height={96}
+              />
+              <Image
+                src="/images/partner-fpc.png"
+                alt="FPC"
+                width={90}
+                height={80}
+              />
+              <Image
+                src="/images/partner-panasonic.png"
+                alt="Panasonic"
+                width={241}
+                height={37}
+              />
+            </div>
             <Image
-              src="/images/partner-diners.png"
-              alt="Diners Club International"
-              width={132}
-              height={96}
-            />
-            <Image
-              src="/images/partner-fpc.png"
-              alt="FPC"
-              width={90}
-              height={80}
-            />
-            <Image
-              src="/images/partner-panasonic.png"
-              alt="Panasonic"
-              width={241}
-              height={37}
+              className="absolute z-10 left-1/2 -bottom-40 md:-bottom-36 -translate-x-1/2"
+              src="/images/fig-bear.jpg"
+              alt=""
+              width={268}
+              height={320}
             />
           </div>
-          <Image
-            className="absolute z-10 left-1/2 -bottom-40 md:-bottom-36 -translate-x-1/2"
-            src="/images/fig-bear.jpg"
-            alt=""
-            width={268}
-            height={320}
-          />
-        </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <Footer />
-    </div>
+        {/* Footer */}
+        <Footer />
+      </div>
+    </main>
   );
 }
