@@ -9,7 +9,7 @@ import {
   formatAdminSlotDateTimeRange,
   formatAdminSlotTime,
   getAdminSlotDateInputValue,
-  getAdminSlotTimeInputValue
+  getAdminSlotTimeInputValue,
 } from "@/lib/slot-display";
 
 export type SlotTableRow = {
@@ -55,7 +55,10 @@ type SlotsTableProps = {
   slots: SlotTableRow[];
 };
 
-const slotStateOptions: Array<SlotTableRow["state"]> = ["APPLICATIONS_CLOSED", "ACCEPTING_APPLICATIONS"];
+const slotStateOptions: Array<SlotTableRow["state"]> = [
+  "APPLICATIONS_CLOSED",
+  "ACCEPTING_APPLICATIONS",
+];
 const slotThemeMaxLength = 150;
 const slotCapacityMax = 100;
 const textInputClassName =
@@ -81,18 +84,25 @@ function getInitialFormState(slot: SlotTableRow): SlotFormState {
     capacityText: String(slot.capacity),
     applicationBeginDate: getAdminSlotDateInputValue(slot.applicationBegin),
     applicationBeginTime: getAdminSlotTimeInputValue(slot.applicationBegin),
-    applicationDeadlineDate: getAdminSlotDateInputValue(slot.applicationDeadline),
-    applicationDeadlineTime: getAdminSlotTimeInputValue(slot.applicationDeadline),
+    applicationDeadlineDate: getAdminSlotDateInputValue(
+      slot.applicationDeadline,
+    ),
+    applicationDeadlineTime: getAdminSlotTimeInputValue(
+      slot.applicationDeadline,
+    ),
     lotteryResultDate: getAdminSlotDateInputValue(slot.lotteryResultTime),
     lotteryResultTime: getAdminSlotTimeInputValue(slot.lotteryResultTime),
     eventDate: getAdminSlotDateInputValue(slot.startsAt),
     startsAtTime: getAdminSlotTimeInputValue(slot.startsAt),
     endsAtTime: getAdminSlotTimeInputValue(slot.endsAt),
-    state: slot.state
+    state: slot.state,
   };
 }
 
-function buildSlotUpdatePayload(values: SlotFormState): { error?: string; payload?: Record<string, unknown> } {
+function buildSlotUpdatePayload(values: SlotFormState): {
+  error?: string;
+  payload?: Record<string, unknown>;
+} {
   const eventName = values.eventName.trim();
   const venueId = values.venueId.trim();
   const theme = values.theme.trim();
@@ -119,7 +129,9 @@ function buildSlotUpdatePayload(values: SlotFormState): { error?: string; payloa
   }
 
   if (theme.length > slotThemeMaxLength) {
-    return { error: `テーマは${slotThemeMaxLength}文字以内で入力してください。` };
+    return {
+      error: `テーマは${slotThemeMaxLength}文字以内で入力してください。`,
+    };
   }
 
   if (!/^\d+$/.test(capacityText)) {
@@ -127,17 +139,41 @@ function buildSlotUpdatePayload(values: SlotFormState): { error?: string; payloa
   }
 
   const capacity = Number.parseInt(capacityText, 10);
-  if (!Number.isInteger(capacity) || capacity < 0 || capacity > slotCapacityMax) {
-    return { error: `定員は0から${slotCapacityMax}までの整数で入力してください。` };
+  if (
+    !Number.isInteger(capacity) ||
+    capacity < 0 ||
+    capacity > slotCapacityMax
+  ) {
+    return {
+      error: `定員は0から${slotCapacityMax}までの整数で入力してください。`,
+    };
   }
 
-  const applicationBegin = combineAdminSlotDateAndTime(values.applicationBeginDate, values.applicationBeginTime);
-  const applicationDeadline = combineAdminSlotDateAndTime(values.applicationDeadlineDate, values.applicationDeadlineTime);
-  const lotteryResultTime = combineAdminSlotDateAndTime(values.lotteryResultDate, values.lotteryResultTime);
-  const startsAt = combineAdminSlotDateAndTime(values.eventDate, values.startsAtTime);
-  const endsAt = combineAdminSlotDateAndTime(values.eventDate, values.endsAtTime);
+  const applicationBegin = combineAdminSlotDateAndTime(
+    values.applicationBeginDate,
+    values.applicationBeginTime,
+  );
+  const applicationDeadline = combineAdminSlotDateAndTime(
+    values.applicationDeadlineDate,
+    values.applicationDeadlineTime,
+  );
+  const lotteryResultTime = combineAdminSlotDateAndTime(
+    values.lotteryResultDate,
+    values.lotteryResultTime,
+  );
+  const startsAt = combineAdminSlotDateAndTime(
+    values.eventDate,
+    values.startsAtTime,
+  );
+  const endsAt = combineAdminSlotDateAndTime(
+    values.eventDate,
+    values.endsAtTime,
+  );
 
-  if (new Date(applicationBegin).getTime() > new Date(applicationDeadline).getTime()) {
+  if (
+    new Date(applicationBegin).getTime() >
+    new Date(applicationDeadline).getTime()
+  ) {
     return { error: "応募開始日時は応募締切日時以前にしてください。" };
   }
 
@@ -164,8 +200,8 @@ function buildSlotUpdatePayload(values: SlotFormState): { error?: string; payloa
       lotteryResultTime,
       startsAt,
       endsAt,
-      state: values.state
-    }
+      state: values.state,
+    },
   };
 }
 
@@ -184,7 +220,7 @@ export function SlotsTable({ slots }: SlotsTableProps) {
 
   const selectedSlot = useMemo(
     () => slotRows.find((slot) => slot.id === selectedSlotId) ?? null,
-    [selectedSlotId, slotRows]
+    [selectedSlotId, slotRows],
   );
 
   useEffect(() => {
@@ -210,13 +246,16 @@ export function SlotsTable({ slots }: SlotsTableProps) {
 
       try {
         const response = await fetch("/api/admin/venues");
-        const payload = (await response.json().catch(() => null)) as
-          | { error?: string; venues?: VenueOption[] }
-          | null;
+        const payload = (await response.json().catch(() => null)) as {
+          error?: string;
+          venues?: VenueOption[];
+        } | null;
 
         if (!response.ok || !payload?.venues) {
           if (!isCancelled) {
-            setErrorMessage(payload?.error ?? "会場一覧を取得できませんでした。");
+            setErrorMessage(
+              payload?.error ?? "会場一覧を取得できませんでした。",
+            );
           }
           return;
         }
@@ -257,8 +296,13 @@ export function SlotsTable({ slots }: SlotsTableProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isSubmitting, selectedSlotId]);
 
-  function updateFormValue<Key extends keyof SlotFormState>(key: Key, value: SlotFormState[Key]) {
-    setFormValues((current) => (current ? { ...current, [key]: value } : current));
+  function updateFormValue<Key extends keyof SlotFormState>(
+    key: Key,
+    value: SlotFormState[Key],
+  ) {
+    setFormValues((current) =>
+      current ? { ...current, [key]: value } : current,
+    );
   }
 
   function closeModal() {
@@ -296,21 +340,26 @@ export function SlotsTable({ slots }: SlotsTableProps) {
       const response = await fetch(`/api/admin/slots/${selectedSlot.id}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(submission.payload)
+        body: JSON.stringify(submission.payload),
       });
 
-      const payload = (await response.json().catch(() => null)) as
-        | { error?: string; slot?: SlotTableRow }
-        | null;
+      const payload = (await response.json().catch(() => null)) as {
+        error?: string;
+        slot?: SlotTableRow;
+      } | null;
 
       if (!response.ok || !payload?.slot) {
         setErrorMessage(payload?.error ?? "スロットを更新できませんでした。");
         return;
       }
 
-      setSlotRows((current) => current.map((slot) => (slot.id === payload.slot?.id ? payload.slot : slot)));
+      setSlotRows((current) =>
+        current.map((slot) =>
+          slot.id === payload.slot?.id ? payload.slot : slot,
+        ),
+      );
       setSelectedSlotId(null);
     } catch {
       setErrorMessage("スロットを更新できませんでした。");
@@ -347,7 +396,9 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 role="button"
                 tabIndex={0}
               >
-                <td className="px-2 py-3">{formatAdminSlotDate(slot.startsAt)}</td>
+                <td className="px-2 py-3">
+                  {formatAdminSlotDate(slot.startsAt)}
+                </td>
                 <td className="px-2 py-3">{slot.eventName}</td>
                 <td className="px-2 py-3">{slot.venueName}</td>
                 <td className="px-2 py-3">{getSlotStateLabel(slot.state)}</td>
@@ -377,8 +428,12 @@ export function SlotsTable({ slots }: SlotsTableProps) {
           >
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">スロット編集</h2>
-                <p className="mt-1 text-sm text-slate-500">{selectedSlot.eventName}</p>
+                <h2 className="text-lg font-semibold text-slate-900">
+                  スロット編集
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  {selectedSlot.eventName}
+                </p>
               </div>
               <button
                 className={secondaryButtonClassName}
@@ -391,33 +446,47 @@ export function SlotsTable({ slots }: SlotsTableProps) {
             </div>
 
             <form className="space-y-5 px-6 py-5" onSubmit={onSubmit}>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="slot-event-name">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="slot-event-name"
+                  >
                     イベント名
                   </label>
                   <input
                     className={textInputClassName}
                     id="slot-event-name"
-                    onChange={(event) => updateFormValue("eventName", event.target.value)}
+                    onChange={(event) =>
+                      updateFormValue("eventName", event.target.value)
+                    }
                     type="text"
                     value={formValues.eventName}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="slot-venue">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="slot-venue"
+                  >
                     会場
                   </label>
                   <select
                     className={selectInputClassName}
                     disabled={isLoadingVenues || isSubmitting}
                     id="slot-venue"
-                    onChange={(event) => updateFormValue("venueId", event.target.value)}
+                    onChange={(event) =>
+                      updateFormValue("venueId", event.target.value)
+                    }
                     value={formValues.venueId}
                   >
                     <option value="">
-                      {isLoadingVenues ? "会場を読み込み中..." : venues.length > 0 ? "会場を選択" : "会場なし"}
+                      {isLoadingVenues
+                        ? "会場を読み込み中..."
+                        : venues.length > 0
+                          ? "会場を選択"
+                          : "会場なし"}
                     </option>
                     {venues.map((venue) => (
                       <option key={venue.id} value={venue.id}>
@@ -430,56 +499,85 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 <div className="md:col-span-2">
                   <div className="mb-1 flex items-center justify-between text-xs font-medium text-slate-600">
                     <label htmlFor="slot-theme">テーマ</label>
-                    <span>{formValues.theme.length}/{slotThemeMaxLength}</span>
+                    <span>
+                      {formValues.theme.length}/{slotThemeMaxLength}
+                    </span>
                   </div>
                   <textarea
                     className={`${textInputClassName} min-h-32`}
                     id="slot-theme"
                     maxLength={slotThemeMaxLength}
-                    onChange={(event) => updateFormValue("theme", event.target.value)}
+                    onChange={(event) =>
+                      updateFormValue("theme", event.target.value)
+                    }
                     value={formValues.theme}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="slot-instructor">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="slot-instructor"
+                  >
                     インストラクター
                   </label>
                   <input
                     className={textInputClassName}
                     id="slot-instructor"
-                    onChange={(event) => updateFormValue("instructor", event.target.value)}
+                    onChange={(event) =>
+                      updateFormValue("instructor", event.target.value)
+                    }
                     type="text"
                     value={formValues.instructor}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="slot-capacity">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="slot-capacity"
+                  >
                     定員
                   </label>
                   <input
                     className={textInputClassName}
                     id="slot-capacity"
                     inputMode="numeric"
-                    onChange={(event) => updateFormValue("capacityText", event.target.value.replace(/\D/g, ""))}
+                    onChange={(event) =>
+                      updateFormValue(
+                        "capacityText",
+                        event.target.value.replace(/\D/g, ""),
+                      )
+                    }
                     type="text"
                     value={formValues.capacityText}
                   />
                 </div>
 
                 <div>
-                  <p className="mb-1 block text-xs font-medium text-slate-600">応募開始日時</p>
+                  <p className="mb-1 block text-xs font-medium text-slate-600">
+                    応募開始日時
+                  </p>
                   <div className="grid gap-2 sm:grid-cols-2">
                     <input
                       className={textInputClassName}
-                      onChange={(event) => updateFormValue("applicationBeginDate", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue(
+                          "applicationBeginDate",
+                          event.target.value,
+                        )
+                      }
                       type="date"
                       value={formValues.applicationBeginDate}
                     />
                     <select
                       className={selectInputClassName}
-                      onChange={(event) => updateFormValue("applicationBeginTime", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue(
+                          "applicationBeginTime",
+                          event.target.value,
+                        )
+                      }
                       value={formValues.applicationBeginTime}
                     >
                       <option value="">応募開始時間を選ぶ</option>
@@ -493,17 +591,29 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 </div>
 
                 <div>
-                  <p className="mb-1 block text-xs font-medium text-slate-600">応募締切日時</p>
+                  <p className="mb-1 block text-xs font-medium text-slate-600">
+                    応募締切日時
+                  </p>
                   <div className="grid gap-2 sm:grid-cols-2">
                     <input
                       className={textInputClassName}
-                      onChange={(event) => updateFormValue("applicationDeadlineDate", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue(
+                          "applicationDeadlineDate",
+                          event.target.value,
+                        )
+                      }
                       type="date"
                       value={formValues.applicationDeadlineDate}
                     />
                     <select
                       className={selectInputClassName}
-                      onChange={(event) => updateFormValue("applicationDeadlineTime", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue(
+                          "applicationDeadlineTime",
+                          event.target.value,
+                        )
+                      }
                       value={formValues.applicationDeadlineTime}
                     >
                       <option value="">応募締切時間を選ぶ</option>
@@ -517,17 +627,23 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 </div>
 
                 <div>
-                  <p className="mb-1 block text-xs font-medium text-slate-600">抽選結果日時</p>
+                  <p className="mb-1 block text-xs font-medium text-slate-600">
+                    抽選結果日時
+                  </p>
                   <div className="grid gap-2 sm:grid-cols-2">
                     <input
                       className={textInputClassName}
-                      onChange={(event) => updateFormValue("lotteryResultDate", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue("lotteryResultDate", event.target.value)
+                      }
                       type="date"
                       value={formValues.lotteryResultDate}
                     />
                     <select
                       className={selectInputClassName}
-                      onChange={(event) => updateFormValue("lotteryResultTime", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue("lotteryResultTime", event.target.value)
+                      }
                       value={formValues.lotteryResultTime}
                     >
                       <option value="">時間を選択</option>
@@ -541,17 +657,23 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 </div>
 
                 <div className="md:col-span-2">
-                  <p className="mb-1 block text-xs font-medium text-slate-600">開催日時</p>
+                  <p className="mb-1 block text-xs font-medium text-slate-600">
+                    開催日時
+                  </p>
                   <div className="grid gap-2 md:grid-cols-3">
                     <input
                       className={textInputClassName}
-                      onChange={(event) => updateFormValue("eventDate", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue("eventDate", event.target.value)
+                      }
                       type="date"
                       value={formValues.eventDate}
                     />
                     <select
                       className={selectInputClassName}
-                      onChange={(event) => updateFormValue("startsAtTime", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue("startsAtTime", event.target.value)
+                      }
                       value={formValues.startsAtTime}
                     >
                       <option value="">開始時間を選択</option>
@@ -563,7 +685,9 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                     </select>
                     <select
                       className={selectInputClassName}
-                      onChange={(event) => updateFormValue("endsAtTime", event.target.value)}
+                      onChange={(event) =>
+                        updateFormValue("endsAtTime", event.target.value)
+                      }
                       value={formValues.endsAtTime}
                     >
                       <option value="">終了時間を選択</option>
@@ -577,13 +701,21 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600" htmlFor="slot-state">
+                  <label
+                    className="mb-1 block text-xs font-medium text-slate-600"
+                    htmlFor="slot-state"
+                  >
                     状態
                   </label>
                   <select
                     className={selectInputClassName}
                     id="slot-state"
-                    onChange={(event) => updateFormValue("state", event.target.value as SlotTableRow["state"])}
+                    onChange={(event) =>
+                      updateFormValue(
+                        "state",
+                        event.target.value as SlotTableRow["state"],
+                      )
+                    }
                     value={formValues.state}
                   >
                     {slotStateOptions.map((state) => (
@@ -612,7 +744,9 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                 </button>
                 <button
                   className={primaryButtonClassName}
-                  disabled={isSubmitting || isLoadingVenues || venues.length === 0}
+                  disabled={
+                    isSubmitting || isLoadingVenues || venues.length === 0
+                  }
                   type="submit"
                 >
                   {isSubmitting ? "保存中..." : "保存"}

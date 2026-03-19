@@ -1,10 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f4f7fb 0%, #ffffff 45%);
-  color: #1f2937;
+  color: #2c2520;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "halt";
 }
-

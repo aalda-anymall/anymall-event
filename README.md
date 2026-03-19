@@ -25,6 +25,7 @@ Create `.env` with the following variables:
 
 - `DATABASE_URL`: Neon pooled connection string for app runtime
 - `DIRECT_URL`: Neon direct connection string for Prisma migrations
+- `DATABASE_URL_UNPOOLED`:
 - `SENDGRID_API_KEY`: API key from SendGrid
 - `EMAIL_FROM`: sender email for confirmation mails (must be a verified sender/domain in SendGrid)
 
