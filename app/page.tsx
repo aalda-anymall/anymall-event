@@ -96,6 +96,7 @@ export default async function HomePage() {
           <a
             href="#events"
             className="absolute left-1/2 bottom-[32px] -translate-x-1/2 rounded-full bg-brand-green px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-brand-green-dark md:bottom-[30px] fadeIn"
+            // style={{ animationDuration: "3000ms" }}
           >
             イベントを見る ↓
           </a>
@@ -117,7 +118,7 @@ export default async function HomePage() {
                 height={512}
               />
             </div>
-            <div className="mx-auto max-w-2xl text-base leading-7 text-warm-600 md:text-center">
+            <div className="mx-auto max-w-3xl text-base leading-7 text-warm-600 md:text-center">
               <p>
                 獣医師監修のもと、ペットの食事・健康・生活に関するテーマを取り上げた少人数制イベントを開催します。
               </p>
@@ -127,7 +128,7 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="mx-auto grid max-w-2xl gap-4 md:grid-cols-2">
+            <div className="mx-auto grid max-w-3xl gap-4 md:grid-cols-2">
               {[
                 {
                   icon: "Bone" as const,
