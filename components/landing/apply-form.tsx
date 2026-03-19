@@ -16,6 +16,20 @@ type SlotData = {
   instructor: string;
 };
 
+type GenderValue = "" | "male" | "female" | "unspecified";
+
+const GENDER_OPTIONS: { value: GenderValue; label: string }[] = [
+  { value: "male", label: "男性" },
+  { value: "female", label: "女性" },
+  { value: "unspecified", label: "回答しない" },
+];
+
+const genderDisplayLabel: Record<string, string> = {
+  male: "男性",
+  female: "女性",
+  unspecified: "回答しない",
+};
+
 type FormData = {
   name: string;
   furigana: string;
@@ -23,6 +37,7 @@ type FormData = {
   birthdayYear: string;
   birthdayMonth: string;
   birthdayDay: string;
+  gender: GenderValue;
   prefecture: string;
   memo: string;
 };
@@ -41,7 +56,10 @@ const inputClass =
 const selectClass =
   "w-full appearance-none rounded-lg border border-warm-400 bg-white py-2.5 pl-3.5 pr-9 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
 
-const YEAR_OPTIONS = Array.from({ length: 2026 - 1900 + 1 }, (_, i) => 1900 + i);
+const YEAR_OPTIONS = Array.from(
+  { length: 2026 - 1900 + 1 },
+  (_, i) => 1900 + i,
+);
 const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1);
 const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => i + 1);
 
@@ -237,7 +255,10 @@ function FormStep({
                 onChange={(e) => update("birthdayYear", e.target.value)}
                 onFocus={(e) => {
                   if (!formData.birthdayYear) {
-                    const opt = e.currentTarget.querySelector<HTMLOptionElement>('option[value="1995"]');
+                    const opt =
+                      e.currentTarget.querySelector<HTMLOptionElement>(
+                        'option[value="1995"]',
+                      );
                     if (opt) opt.selected = true;
                   }
                 }}
@@ -323,6 +344,25 @@ function FormStep({
           </div>
         </FormField>
 
+        <FormField label="性別">
+          <div className="grid grid-cols-3 gap-2">
+            {GENDER_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => update("gender", opt.value)}
+                className={`flex h-10 items-center justify-center rounded-lg border text-[13px] font-medium transition-colors ${
+                  formData.gender === opt.value
+                    ? "border-brand-green bg-brand-green-bg text-brand-green-accent"
+                    : "border-warm-400 bg-white text-warm-900 hover:bg-warm-50"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </FormField>
+
         <FormField label="ペットに​ついて​">
           <textarea
             className="min-h-[115px] w-full rounded-lg border border-warm-400 bg-white px-3.5 py-2.5 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1"
@@ -387,8 +427,16 @@ function ConfirmStep({
           <ConfirmRow label="氏名" value={formData.name} />
           <ConfirmRow label="氏名（フリガナ）" value={formData.furigana} />
           <ConfirmRow label="メールアドレス" value={formData.email} />
-          <ConfirmRow label="生年月日" value={formatBirthday(formData.birthdayYear, formData.birthdayMonth, formData.birthdayDay)} />
+          <ConfirmRow
+            label="生年月日"
+            value={formatBirthday(
+              formData.birthdayYear,
+              formData.birthdayMonth,
+              formData.birthdayDay,
+            )}
+          />
           <ConfirmRow label="居住地" value={formData.prefecture} />
+          <ConfirmRow label="性別" value={formData.gender ? genderDisplayLabel[formData.gender] : ""} />
           <ConfirmRow label="メモ" value={formData.memo} />
         </div>
 
@@ -416,7 +464,7 @@ function ConfirmStep({
           disabled={isSubmitting}
           className="flex h-11 items-center justify-center gap-2 rounded-full bg-brand-green px-6 text-sm font-bold text-white transition-colors hover:bg-brand-green-dark disabled:opacity-60"
         >
-          {isSubmitting ? "送信中..." : "この内容で応募する"}
+          {isSubmitting ? "送信中..." : "この内容で送信"}
         </button>
       </div>
     </div>
@@ -477,6 +525,7 @@ export function ApplyForm({ slots }: { slots: SlotData[] }) {
     birthdayYear: "",
     birthdayMonth: "",
     birthdayDay: "",
+    gender: "",
     prefecture: "",
     memo: "",
   });
@@ -521,8 +570,12 @@ export function ApplyForm({ slots }: { slots: SlotData[] }) {
         body: JSON.stringify({
           name: formData.furigana.trim(),
           email: formData.email.trim().toLowerCase(),
-          birthday: toBirthdayISO(formData.birthdayYear, formData.birthdayMonth, formData.birthdayDay),
-          gender: "unspecified",
+          birthday: toBirthdayISO(
+            formData.birthdayYear,
+            formData.birthdayMonth,
+            formData.birthdayDay,
+          ),
+          gender: formData.gender || "unspecified",
           prefecture: formData.prefecture.trim(),
           memo: formData.memo.trim(),
           selectedSlotIds: slots.map((s) => s.id),
