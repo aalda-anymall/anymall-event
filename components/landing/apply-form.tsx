@@ -51,10 +51,10 @@ const STEPS = [
 ] as const;
 
 const inputClass =
-  "w-full rounded-lg border border-warm-400 bg-white px-3.5 py-2.5 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
+  "w-full rounded-lg border border-warm-400 bg-white px-3.5 py-2.5 text-[16px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
 
 const selectClass =
-  "w-full appearance-none rounded-lg border border-warm-400 bg-white py-2.5 pl-3.5 pr-9 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
+  "w-full appearance-none rounded-lg border border-warm-400 bg-white py-2.5 pl-3.5 pr-9 text-[16px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
 
 const YEAR_OPTIONS = Array.from(
   { length: 2026 - 1900 + 1 },
@@ -489,7 +489,7 @@ function FormStep({
 
         <FormField label="ペットに​ついて​">
           <textarea
-            className="min-h-[115px] w-full rounded-lg border border-warm-400 bg-white px-3.5 py-2.5 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1"
+            className="min-h-[115px] w-full rounded-lg border border-warm-400 bg-white px-3.5 py-2.5 text-[16px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1"
             placeholder="犬種・猫種・年齢・興味・関心・困りごとなど、飼っている​ペットに​ついて​教えてください。"
             maxLength={memoMaxLength}
             value={formData.memo}
