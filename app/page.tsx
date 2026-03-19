@@ -292,7 +292,7 @@ export default async function HomePage() {
         {/* Partner */}
         <section className="relative bg-white pt-16 pb-48 overflow-hidden">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-10">
-            <SectionHeading sub="Partner" label="パートナー" />
+            {/* <SectionHeading sub="Partner" label="パートナー" />
             <div className="relative z-30 flex flex-col items-center gap-16 md:flex-row md:justify-center md:gap-16">
               <Image
                 src="/images/partner-diners.png"
@@ -312,7 +312,7 @@ export default async function HomePage() {
                 width={241}
                 height={37}
               />
-            </div>
+            </div> */}
             <Image
               className="absolute z-10 left-1/2 -bottom-40 md:-bottom-36 -translate-x-1/2"
               src="/images/fig-bear.jpg"
