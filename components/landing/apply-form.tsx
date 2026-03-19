@@ -20,7 +20,9 @@ type FormData = {
   name: string;
   furigana: string;
   email: string;
-  birthday: string;
+  birthdayYear: string;
+  birthdayMonth: string;
+  birthdayDay: string;
   prefecture: string;
   memo: string;
 };
@@ -35,6 +37,27 @@ const STEPS = [
 
 const inputClass =
   "w-full rounded-lg border border-warm-400 bg-white px-3.5 py-2.5 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
+
+const selectClass =
+  "w-full appearance-none rounded-lg border border-warm-400 bg-white py-2.5 pl-3.5 pr-9 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1";
+
+const YEAR_OPTIONS = Array.from({ length: 2026 - 1900 + 1 }, (_, i) => 1900 + i);
+const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1);
+const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => i + 1);
+
+function formatBirthday(year: string, month: string, day: string): string {
+  if (!year && !month && !day) return "";
+  const parts: string[] = [];
+  if (year) parts.push(`${year}年`);
+  if (month) parts.push(`${month}月`);
+  if (day) parts.push(`${day}日`);
+  return parts.join("");
+}
+
+function toBirthdayISO(year: string, month: string, day: string): string {
+  if (!year || !month || !day) return "";
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
 
 function StepIndicator({ current }: { current: Step }) {
   const currentIndex = STEPS.findIndex((s) => s.key === current);
@@ -205,38 +228,100 @@ function FormStep({
           />
         </FormField>
 
-        <div className="grid gap-3.5 md:grid-cols-2">
-          <FormField label="生年月日">
-            <input
-              type="date"
-              className={inputClass}
-              value={formData.birthday}
-              onChange={(e) => update("birthday", e.target.value)}
-            />
-          </FormField>
-
-          <FormField label="居住地">
+        <FormField label="生年月日">
+          <div className="grid grid-cols-3 gap-2">
             <div className="relative">
               <select
-                className="w-full appearance-none rounded-lg border border-warm-400 bg-white py-2.5 pl-3.5 pr-9 text-[13px] text-warm-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1"
-                value={formData.prefecture}
-                onChange={(e) => update("prefecture", e.target.value)}
+                className={selectClass}
+                value={formData.birthdayYear}
+                onChange={(e) => update("birthdayYear", e.target.value)}
+                onFocus={(e) => {
+                  if (!formData.birthdayYear) {
+                    const opt = e.currentTarget.querySelector<HTMLOptionElement>('option[value="1995"]');
+                    if (opt) opt.selected = true;
+                  }
+                }}
+                onBlur={(e) => {
+                  if (!formData.birthdayYear) {
+                    e.currentTarget.value = "";
+                  }
+                }}
               >
-                <option value="">選択してください</option>
-                {prefectureOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
+                <option value="">年</option>
+                {YEAR_OPTIONS.map((y) => (
+                  <option key={y} value={String(y)}>
+                    {y}
                   </option>
                 ))}
               </select>
               <Icon
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-warm-500"
+                className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-warm-500"
                 name="ChevronDown"
-                size={16}
+                size={14}
               />
             </div>
-          </FormField>
-        </div>
+            <div className="relative">
+              <select
+                className={selectClass}
+                value={formData.birthdayMonth}
+                onChange={(e) => update("birthdayMonth", e.target.value)}
+              >
+                <option value="">月</option>
+                {MONTH_OPTIONS.map((m) => (
+                  <option key={m} value={String(m)}>
+                    {m}月
+                  </option>
+                ))}
+              </select>
+              <Icon
+                className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-warm-500"
+                name="ChevronDown"
+                size={14}
+              />
+            </div>
+            <div className="relative">
+              <select
+                className={selectClass}
+                value={formData.birthdayDay}
+                onChange={(e) => update("birthdayDay", e.target.value)}
+              >
+                <option value="">日</option>
+                {DAY_OPTIONS.map((d) => (
+                  <option key={d} value={String(d)}>
+                    {d}日
+                  </option>
+                ))}
+              </select>
+              <Icon
+                className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-warm-500"
+                name="ChevronDown"
+                size={14}
+              />
+            </div>
+          </div>
+        </FormField>
+
+        <FormField label="居住地">
+          <div className="relative">
+            <select
+              className={selectClass}
+              value={formData.prefecture}
+              onChange={(e) => update("prefecture", e.target.value)}
+            >
+              <option value="">選択してください</option>
+              {prefectureOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <Icon
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-warm-500"
+              name="ChevronDown"
+              size={16}
+            />
+          </div>
+        </FormField>
 
         <FormField label="ペットに​ついて​">
           <textarea
@@ -302,7 +387,7 @@ function ConfirmStep({
           <ConfirmRow label="氏名" value={formData.name} />
           <ConfirmRow label="氏名（フリガナ）" value={formData.furigana} />
           <ConfirmRow label="メールアドレス" value={formData.email} />
-          <ConfirmRow label="生年月日" value={formData.birthday} />
+          <ConfirmRow label="生年月日" value={formatBirthday(formData.birthdayYear, formData.birthdayMonth, formData.birthdayDay)} />
           <ConfirmRow label="居住地" value={formData.prefecture} />
           <ConfirmRow label="メモ" value={formData.memo} />
         </div>
@@ -389,7 +474,9 @@ export function ApplyForm({ slots }: { slots: SlotData[] }) {
     name: "",
     furigana: "",
     email: "",
-    birthday: "",
+    birthdayYear: "",
+    birthdayMonth: "",
+    birthdayDay: "",
     prefecture: "",
     memo: "",
   });
@@ -434,7 +521,7 @@ export function ApplyForm({ slots }: { slots: SlotData[] }) {
         body: JSON.stringify({
           name: formData.furigana.trim(),
           email: formData.email.trim().toLowerCase(),
-          birthday: formData.birthday.trim(),
+          birthday: toBirthdayISO(formData.birthdayYear, formData.birthdayMonth, formData.birthdayDay),
           gender: "unspecified",
           prefecture: formData.prefecture.trim(),
           memo: formData.memo.trim(),
