@@ -223,7 +223,10 @@ export default async function HomePage() {
                     <p className="text-base leading-6 text-warm-500">
                       {venue.description}
                     </p>
-                    <VenueGallery images={venue.slides} venueName={venue.name} />
+                    <VenueGallery
+                      images={venue.slides}
+                      venueName={venue.name}
+                    />
                   </div>
                 </div>
               ))}

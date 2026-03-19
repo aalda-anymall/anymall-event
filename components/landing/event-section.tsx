@@ -68,55 +68,29 @@ function EventCard({
                   <Icon className="text-white" name="Check" size={16} />
                 )}
               </button>
-              <span className="inline-flex items-center rounded-full bg-brand-green-bg px-2.5 py-0.5 text-[11px] font-semibold text-brand-green-text">
+              <span>{formatDate(slot.startsAt)}</span>
+              {/* <span className="inline-flex items-center rounded-full bg-brand-green-bg px-2.5 py-0.5 text-[11px] font-semibold text-brand-green-text">
                 募集中
-              </span>
+              </span> */}
             </div>
           )}
-          {!isAccepting && (
+          {/* {!isAccepting && (
             <span className="inline-flex w-fit items-center rounded-full bg-status-amber-bg px-2.5 py-0.5 text-[11px] font-semibold text-status-amber">
               準備中
             </span>
-          )}
+          )} */}
           <h3 className="text-xl font-bold text-warm-900">{slot.eventName}</h3>
         </div>
       </div>
 
       <div className="flex flex-col">
         <div className="flex items-center gap-2">
-          <div className="min-w-4">
-            <Icon className="text-warm-500" name="Calendar" size={16} />
-          </div>
-          <span className="text-[13px] text-warm-900">
-            {formatDate(slot.startsAt)} {formatTime(slot.startsAt)}〜
-            {formatTime(slot.endsAt)}
-          </span>
+          <div className="min-w-4">担当者</div>
+          <span className="text-[13px] text-warm-900">{slot.instructor}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="min-w-4">
-            <Icon className="text-warm-500" name="MapPin" size={16} />
-          </div>
-          <span className="text-[13px] text-warm-900">
-            {slot.venue.name} — {slot.venue.address}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-4 text-[13px]">
-          <div className="text-warm-500">
-            <p>応募期間</p>
-            <p>担当者</p>
-          </div>
-          <div className="text-warm-900">
-            <p>
-              {formatApplicationPeriod(
-                slot.applicationBegin,
-                slot.applicationDeadline,
-              )}
-            </p>
-            <p>{slot.instructor}</p>
-          </div>
+          <div className="min-w-4">会場</div>
+          <span className="text-[13px] text-warm-900">{slot.venue.name}</span>
         </div>
       </div>
 
@@ -125,7 +99,7 @@ function EventCard({
           href={`/event/apply/?slots=${slot.id}`}
           className="flex h-11 mt-auto items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
         >
-          申し込む
+          参加を申し込む
         </a>
       )}
       {!isAccepting && (
