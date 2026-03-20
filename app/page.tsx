@@ -130,7 +130,7 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <h3 className="mx-auto max-w-3xl font-serif text-lg font-bold text-warm-900 md:text-center">
+            <h3 className="mx-auto max-w-3xl text-center font-serif text-xl font-semibold leading-normal text-warm-800">
               実施予定テーマ
             </h3>
 
