@@ -99,6 +99,7 @@ export function ApplyContent({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     new Set(initialSelectedSlots.map((s) => s.id)),
   );
+  const [showLimitMessage, setShowLimitMessage] = useState(false);
 
   const allSlots = [...initialSelectedSlots, ...otherSlots];
   const selectedSlots = allSlots.filter((s) => selectedIds.has(s.id));
@@ -109,8 +110,13 @@ export function ApplyContent({
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
+        setShowLimitMessage(false);
       } else if (next.size < 3) {
         next.add(id);
+        setShowLimitMessage(false);
+      } else {
+        // 既に3件選択中の場合、メッセージを表示
+        setShowLimitMessage(true);
       }
       return next;
     });
@@ -128,6 +134,32 @@ export function ApplyContent({
           当選結果はご登録いただいたメールアドレス宛にご連絡いたします。
         </div>
       </div>
+
+      {showLimitMessage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
+          onClick={() => setShowLimitMessage(false)}
+        >
+          <div
+            className="mx-4 max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-center text-base font-semibold text-warm-900">
+              一度に応募できるのは3件までです
+            </p>
+            <p className="mt-2 text-center text-sm text-warm-600">
+              他のイベント日程を選択したい場合は、<br />
+              選択済みの日程の選択を解除してください。
+            </p>
+            <button
+              onClick={() => setShowLimitMessage(false)}
+              className="mt-4 w-full rounded-full bg-brand-green py-3 text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
 
       {selectedSlots.length > 0 && (
         <div className="w-full mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4">
