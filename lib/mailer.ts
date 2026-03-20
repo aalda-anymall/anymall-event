@@ -74,7 +74,7 @@ export async function sendApplicationReceivedEmail({
 
 【応募内容】
 ・氏名：${applicantName}
-・申し込みイベント：
+・応募イベント日程：
 ${slotListText}
 
 本イベントは応募多数の場合、抽選とさせていただきます。
@@ -103,7 +103,7 @@ URL: https://event.anymall.jp
       <div style="background-color: #f9f9f9; padding: 16px; margin: 20px 0; border-radius: 4px;">
         <p style="margin: 0 0 8px 0;"><strong>【応募内容】</strong></p>
         <p style="margin: 0 0 8px 0;">・氏名：${applicantName}</p>
-        <p style="margin: 0 0 4px 0;">・申し込みイベント：</p>
+        <p style="margin: 0 0 4px 0;">・応募イベント日程：</p>
         <ul style="margin: 0; padding-left: 24px;">
           ${slotListHtml}
         </ul>
@@ -130,7 +130,7 @@ URL: https://event.anymall.jp
   const message: MailDataRequired = {
     from: fromField,
     to,
-    subject: "【AnyMall】イベント参加申し込みありがとうございます",
+    subject: "【AnyMall】ご応募ありがとうございます",
     text: textBody,
     html: htmlBody
   };

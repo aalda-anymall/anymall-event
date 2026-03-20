@@ -26,7 +26,7 @@ const notoSerifJP = Noto_Serif_JP({
 });
 
 const siteTitle =
-  "AnyMall 獣医師監修 愛犬・愛猫のためのウェルネスランチイベント申し込み受付中！";
+  "AnyMall 獣医師監修 愛犬・愛猫のためのウェルネスランチイベント抽選応募受付中！";
 const siteDescription =
   "愛犬との暮らしがもっと豊かになる、体験型イベント。食事・健康・ライフスタイルを、専門家と一緒に楽しく学びませんか。";
 const siteUrl = "https://event.anymall.jp";
