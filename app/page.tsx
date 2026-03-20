@@ -83,11 +83,15 @@ export default async function HomePage() {
               </h1>
               <p className="text-center md:text-right text-[15px] leading-7 text-warm-700 md:text-base md:leading-8 md:mt-8">
                 <span className="md:inline-block md:bg-white md:pt-0.5 md:pb-1 md:px-2">
-                  大切な愛犬との暮らしがもっと豊かになる、体験型イベント。
+                  獣医師監修の特別な少人数制イベントへ、抽選でご招待いたします。
                 </span>
                 <br />
                 <span className="md:inline-block md:bg-white md:pt-0.5 md:pb-1 md:px-2">
-                  食事・健康・ライフスタイルを、専門家と一緒に楽しく学びませんか。
+                  ランチを楽しみながら、専門家と一緒に学んでみませんか？
+                </span>
+                <br />
+                <span className="inline-block md:bg-white pt-0.5 pb-1 px-2 mt-2 text-orange-600">
+                  ※応募・参加は無料
                 </span>
               </p>
             </div>
@@ -126,7 +130,7 @@ export default async function HomePage() {
                 ランチを楽しみながら、栄養学、手作りフード、犬種別の健康管理、長寿の秘訣など、
                 愛犬との暮らしに役立つ知識やヒントを学べる特別な時間です。
                 <br />
-                抽選で、各日程20〜25組様をご招待。わんちゃんやねこちゃん、ご家族と一緒にご参加いただけます。
+                抽選で、各日程20〜25組様を無料でご招待。わんちゃんやねこちゃん、ご家族と一緒にご参加いただけます。
               </p>
             </div>
 
