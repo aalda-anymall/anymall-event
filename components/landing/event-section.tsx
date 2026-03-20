@@ -125,6 +125,7 @@ export function EventSection({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showAllAccepting, setShowAllAccepting] = useState(false);
   const [showAllComing, setShowAllComing] = useState(false);
+  const [showLimitMessage, setShowLimitMessage] = useState(false);
 
   const INITIAL_SHOW_COUNT = 12;
 
@@ -143,8 +144,13 @@ export function EventSection({
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
+        setShowLimitMessage(false);
       } else if (next.size < 3) {
         next.add(id);
+        setShowLimitMessage(false);
+      } else {
+        // 既に3件選択中の場合、メッセージを表示
+        setShowLimitMessage(true);
       }
       return next;
     });
@@ -179,12 +185,38 @@ export function EventSection({
             開催内容は​変更に​なる​可能性も​ありますので​ご了承ください。
           </p>
 
+          {showLimitMessage && (
+            <div
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
+              onClick={() => setShowLimitMessage(false)}
+            >
+              <div
+                className="mx-4 max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <p className="text-center text-base font-semibold text-warm-900">
+                  一度に応募できるイベント日程は3件までになります
+                </p>
+                <p className="mt-2 text-center text-sm text-warm-600">
+                  他のイベント日程を選択したい場合は、<br />
+                  選択済みの日程の選択を解除してください。
+                </p>
+                <button
+                  onClick={() => setShowLimitMessage(false)}
+                  className="mt-4 w-full rounded-full bg-brand-green py-3 text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
+                >
+                  閉じる
+                </button>
+              </div>
+            </div>
+          )}
+
           {acceptingSlots.length > 0 && (
             <div className="relative z-30 flex flex-col gap-4">
               <div className="flex items-center gap-2.5">
                 <div className="size-2 rounded bg-brand-green-text" />
                 <span className="text-[15px] font-bold text-warm-900">
-                  抽選応募受付中の​イベント
+                  抽選応募受付中の​イベント日程
                 </span>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
@@ -204,7 +236,7 @@ export function EventSection({
                   onClick={() => setShowAllAccepting(true)}
                   className="flex items-center justify-center gap-2 text-[13px] font-medium text-warm-500"
                 >
-                  他 {remainingAccepting}件のイベントを表示
+                  他 {remainingAccepting}件のイベント日程を表示
                   <Icon
                     className="text-warm-500"
                     name="ChevronRight"
@@ -220,7 +252,7 @@ export function EventSection({
               <div className="flex items-center gap-2.5">
                 <div className="size-2 rounded bg-warm-500" />
                 <span className="text-[15px] font-bold text-warm-900">
-                  抽選応募準備中のイベント
+                  抽選応募準備中のイベント日程
                 </span>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
@@ -234,7 +266,7 @@ export function EventSection({
                   onClick={() => setShowAllComing(true)}
                   className="flex items-center justify-center gap-2 text-[13px] font-medium text-warm-500"
                 >
-                  他 {remainingComing}件のイベントを表示
+                  他 {remainingComing}件のイベント日程を表示
                   <Icon
                     className="text-warm-500"
                     name="ChevronRight"
@@ -270,7 +302,7 @@ export function EventSection({
               <Icon className="text-white" name="Check" size={16} />
             </div>
             <span className="text-sm font-medium text-warm-900">
-              {selectedIds.size}件のイベントを選択中
+              {selectedIds.size}件のイベント日程を選択中
             </span>
             <Icon className="text-warm-400" name="X" size={14} />
           </button>
