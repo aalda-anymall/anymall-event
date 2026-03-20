@@ -59,6 +59,7 @@ export default async function AdminApplicationsPage({ searchParams }: Applicatio
       select: {
         id: true,
         venueId: true,
+        eventName: true,
         startsAt: true,
         endsAt: true,
         venue: {
